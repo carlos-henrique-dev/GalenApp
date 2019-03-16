@@ -1,5 +1,5 @@
 {
-  "name": "GalenApp",
+  "name": "galenapp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,8 +7,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "lodash": "^4.17.11",
     "react": "16.6.3",
-    "react-native": "0.58.6"
+    "react-native": "0.58.6",
+    "react-native-gesture-handler": "^1.1.0",
+    "react-native-vector-icons": "^6.4.1",
+    "react-navigation": "^3.3.2",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
@@ -19,5 +25,17 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "description": "projeto disciplina DPSC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henriqueok20/GalenApp.git"
+  },
+  "author": "henrique",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/henriqueok20/GalenApp/issues"
+  },
+  "homepage": "https://github.com/henriqueok20/GalenApp#readme"
 }
