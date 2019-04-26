@@ -3,15 +3,15 @@ import { createBottomTabNavigator, createAppContainer } from "react-navigation";
 import { colors } from "../../configs/common_styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import userProfileMainStack from "./userProfileMainStack";
-import userProfileSettingsScreen from "./userProfileSettingsScreen";
+import UserStack from "./UserStackConfig";
+import UserSettingsScreen from "./UserSettingsScreen";
 
 const TabNavigator = createBottomTabNavigator(
     {
-        Home: {
-            screen: userProfileMainStack,
+        UserStack: {
+            screen: UserStack,
             navigationOptions: {
-                tabBarLabel: "Perfil",
+                tabBarLabel: "Principal",
                 tabBarIcon: ({ focused, horizontal, tintColor }) => {
                     return (
                         <Icon
@@ -23,8 +23,8 @@ const TabNavigator = createBottomTabNavigator(
                 }
             }
         },
-        Settings: {
-            screen: userProfileSettingsScreen,
+        SetUserSettingsScreentings: {
+            screen: UserSettingsScreen,
             navigationOptions: {
                 tabBarLabel: "Configurações",
                 tabBarIcon: ({ focused, horizontal, tintColor }) => {

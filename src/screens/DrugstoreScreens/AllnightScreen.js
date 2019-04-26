@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { colors } from "../configs/common_styles";
-import PharmacyCard from "../components/PharmacyCard";
+import { colors } from "../../configs/common_styles";
+import PharmacyCard from "../../components/PharmacyCard";
 
 const list = [
     {

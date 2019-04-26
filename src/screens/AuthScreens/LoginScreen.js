@@ -1,11 +1,19 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
-import InputComponent from "../components/InputComponent";
-import { server } from "../configs/api";
-import { colors } from "../configs/common_styles";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    StatusBar,
+    Alert,
+    ActivityIndicator
+} from "react-native";
+import InputComponent from "../../components/InputComponent";
+import { server } from "../../configs/api";
+import { colors } from "../../configs/common_styles";
 import Axios from "axios";
 import { connect } from "react-redux";
-import { userLogin } from "../store/ducks/user";
+import { userLogin } from "../../store/ducks/user";
 
 /* export default */ class LoginScreen extends Component {
     static navigationOptions = {
@@ -14,45 +22,65 @@ import { userLogin } from "../store/ducks/user";
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
-            password: "",
+            email: "henrique2@mail.com",
+            password: "henrique",
             remember: false,
-            forgotPassword: false
+            forgotPassword: false,
+            loading: false
         };
         this.remember = this.state.remember;
 
         this.login = this.login.bind(this);
+        this.createAccount = this.createAccount.bind(this);
+        this.setLoading = this.setLoading.bind(this);
+    }
+
+    setLoading() {
+        this.setState(prevState => {
+            return { loading: !prevState.loading };
+        });
     }
 
     async login() {
+        this.setLoading();
         if (this.state.email.trim() !== "" && this.state.password.trim() !== "") {
             try {
                 const res = await Axios.post(`${server}user/login`, {
                     email: this.state.email,
                     password: this.state.password
                 });
-                console.log("res", res);
                 if (res.status === 200) {
                     Axios.defaults.headers.common["Authorization"] = `bearer ${
                         res.data.response.token
                     }`;
-                    this.props.userLogin(res.data.result);
-                    this.props.navigation.navigate("userTabsProfile");
+                    this.props.saveLoginData(res.data.response);
+                    this.setLoading();
+                    this.props.navigation.navigate("UserPaths");
                 } else if (res.status === 401) {
+                    this.setLoading();
                     Alert.alert("Erro", "Dados inválidos");
                 }
             } catch (error) {
-                Alert.alert("erro", "Erro no login");
+                this.setLoading();
+                Alert.alert("erro", "Erro no login" + error);
             }
         } else {
+            this.setLoading();
             Alert.alert("erro", "Campos vazios");
         }
+    }
+
+    createAccount() {
+        this.props.navigation.navigate("FirstLogin");
     }
 
     render() {
         return (
             <View style={styles.screen}>
                 <StatusBar backgroundColor={colors.metallicseaweed} barStyle="light-content" />
+                {this.state.loading ? (
+                    <ActivityIndicator size="large" color={colors.fieryrose} />
+                ) : null}
                 <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
                 <View style={styles.inputBox}>
                     <InputComponent
@@ -108,7 +136,7 @@ import { userLogin } from "../store/ducks/user";
                     <Text style={styles.findPharmacyText}>Encontrar farmácia de plantão</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.login} style={styles.loginButton}>
+                <TouchableOpacity onPress={this.createAccount} style={styles.loginButton}>
                     <Text style={styles.loginButtonText}>Criar conta</Text>
                 </TouchableOpacity>
             </View>

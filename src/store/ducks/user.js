@@ -8,12 +8,10 @@ export const Types = {
 };
 
 const initialState = {
-    user: {
-        id: "",
-        email: "",
-        name: "",
-        token: ""
-    },
+    id: "",
+    email: "",
+    name: "",
+    token: "",
     isLogged: null,
     error: null
 };
@@ -23,12 +21,10 @@ export default function reducer(state = initialState, action) {
         case Types.USER_LOGIN:
             return {
                 ...state,
-                user: {
-                    id: action.payload.id,
-                    email: action.payload.email,
-                    name: action.payload.name,
-                    token: action.payload.token
-                },
+                id: action.payload.id,
+                email: action.payload.email,
+                name: action.payload.name,
+                token: action.payload.token,
                 isLogged: true
             };
         default:
@@ -40,9 +36,9 @@ export function userLogin(data) {
     return {
         type: Types.USER_LOGIN,
         payload: {
-            id: data.id,
-            email: data.email,
-            name: data.name,
+            id: data.costumerID,
+            email: data.costumerEmail,
+            name: data.costumerName,
             token: data.token
         }
     };

@@ -1,9 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+    StatusBar,
+    Alert,
+    KeyboardAvoidingView,
+    ActivityIndicator
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { colors } from "../configs/common_styles";
-import InputComponent from "../components/InputComponent";
-import Footer from "../components/Footer";
+import { colors } from "../../configs/common_styles";
+import InputComponent from "../../components/InputComponent";
+import Footer from "../../components/Footer";
+import Axios from "axios";
+import { server } from "../../configs/api";
 
 export default class SignUpScreen extends Component {
     static navigationOptions = {
@@ -19,10 +31,10 @@ export default class SignUpScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: "",
-            password: "",
-            mail: "",
-            repetpassword: "",
+            user: "Henrique",
+            password: "henrique",
+            repetpassword: "henrique",
+            email: "henrique2@mail.com",
             companyName: "",
             CPNJ: "",
             street: "",
@@ -34,22 +46,67 @@ export default class SignUpScreen extends Component {
             currentstate: "",
             tel: "",
             cel: "",
-
+            loading: false,
             loginType: props.navigation.state.params.type
         };
         this.signUp = this.signUp.bind(this);
+        this.setLoading = this.setLoading.bind(this);
     }
 
-    signUp() {
-        this.props.navigation.navigate("userTabsProfile");
+    setLoading() {
+        this.setState(prevState => {
+            return { loading: !prevState.loading };
+        });
+    }
+
+    async signUp() {
+        if (this.state.password === this.state.repetpassword) {
+            this.setLoading();
+            Axios.post(`${server}user/signup`, {
+                email: this.state.email,
+                name: this.state.user,
+                password: this.state.password,
+                accessType: "costumer"
+            })
+                .then(res => {
+                    if (res.status === 201) {
+                        this.setLoading();
+                        Alert.alert("Sucesso", "Conta criada com sucesso", [
+                            {
+                                text: "Ok",
+                                onPress: () => {
+                                    this.props.navigation.navigate("LoginScreen");
+                                }
+                            }
+                        ]);
+                    }
+                })
+                .catch(err => {
+                    if (err.response.status === 409) {
+                        this.setLoading();
+                        Alert.alert("Erro", "Email já cadastrado");
+                    }
+                    if (err.response.status === 500) {
+                        this.setLoading();
+                        Alert.alert("Erro", "Problema interno");
+                    }
+                });
+        } else {
+            this.setLoading();
+            Alert.alert("erro", "As senhas não conferem");
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
+                {this.state.loading ? (
+                    <ActivityIndicator size="large" color={colors.fieryrose} />
+                ) : null}
                 {this.state.loginType === "custumer" ? (
-                    <View style={styles.loginArea}>
+                    /*     <View style={styles.loginArea}> */
+                    <KeyboardAvoidingView behavior="height" style={styles.loginArea} enabled>
                         <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
                         <InputComponent
                             icon="user"
@@ -62,14 +119,14 @@ export default class SignUpScreen extends Component {
                             icon="at"
                             placeholder="e-mail"
                             placeholderTextColor={colors.nyanza}
-                            value={this.state.mail}
-                            onChangeText={mail => this.setState({ ...this.state, mail: mail })}
+                            value={this.state.email}
+                            onChangeText={email => this.setState({ ...this.state, email: email })}
                         />
                         <InputComponent
                             icon="lock"
                             placeholder="senha"
                             placeholderTextColor={colors.nyanza}
-                            secureTextEntry={true}
+                            secureTextEntry={false}
                             value={this.state.password}
                             onChangeText={password =>
                                 this.setState({ ...this.state, password: password })
@@ -79,7 +136,7 @@ export default class SignUpScreen extends Component {
                             icon="lock"
                             placeholder="Confirme a senha"
                             placeholderTextColor={colors.nyanza}
-                            secureTextEntry={true}
+                            secureTextEntry={false}
                             value={this.state.repetpassword}
                             onChangeText={repetpassword =>
                                 this.setState({ ...this.state, repetpassword: repetpassword })
@@ -93,8 +150,9 @@ export default class SignUpScreen extends Component {
                                 signup={this.signUp}
                             />
                         </View>
-                    </View>
+                    </KeyboardAvoidingView>
                 ) : (
+                    /* </View> */
                     <View style={styles.loginArea}>
                         <ScrollView style={{ flex: 1 }}>
                             <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
@@ -221,8 +279,10 @@ export default class SignUpScreen extends Component {
                                 icon="at"
                                 placeholder="e-mail"
                                 placeholderTextColor={colors.nyanza}
-                                value={this.state.mail}
-                                onChangeText={mail => this.setState({ ...this.state, mail: mail })}
+                                value={this.state.email}
+                                onChangeText={email =>
+                                    this.setState({ ...this.state, email: email })
+                                }
                             />
                             <InputComponent
                                 icon="lock"
@@ -247,6 +307,7 @@ export default class SignUpScreen extends Component {
                         </ScrollView>
                         <View style={styles.footer}>
                             <Footer
+                                onRegister={this.signUp}
                                 title1="Cancelar"
                                 title2="Cadastrar"
                                 navigate={this.props.navigation.goBack}

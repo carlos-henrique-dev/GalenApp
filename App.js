@@ -1,39 +1,21 @@
 import React, { Component } from "react";
-import { createStackNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { Provider } from "react-redux";
 
 import configureStore from "./src/store/store";
 
-import LoginScreen from "./src/screens/LoginScreen";
-import FirstLogin from "./src/screens/FirstLogin";
-import SignUpScreen from "./src/screens/SignUpScreen";
-
-import userTabsProfile from "./src/screens/profiles/userTabsProfile";
-
-// stack navigator para autenticação e registro
-const AuthPaths = createStackNavigator({
-    Login: {
-        screen: LoginScreen
-    },
-    FirstLogin: {
-        screen: FirstLogin
-    },
-    SignUp: {
-        screen: SignUpScreen
-    }
-});
+import AuthPaths from "./src/screens/AuthScreens/AuthStackConfig";
+import UserPaths from "./src/screens/UserScreens/UserTabsConfig";
 
 const SwitchPaths = createSwitchNavigator(
     {
-        AuthPaths: {
-            screen: AuthPaths
-        },
-        userTabsProfile: {
-            screen: userTabsProfile,
+        AuthPaths,
+        UserPaths /* : {
+            screen: UserPaths,
             navigationOptions: {
                 header: null
             }
-        }
+        } */
     },
     { initialRouteName: "AuthPaths" }
 );
