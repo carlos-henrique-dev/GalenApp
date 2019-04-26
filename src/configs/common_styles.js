@@ -1,11 +1,10 @@
 export const colors = {
-	mainBlue: '#5CC2EA',
-	//lighterBlue: '#5CC2EA',
-	mainPurple: '#9325B2',
-	lighterPurple: '#B060C7',
-	cancel: '#D93629',
-	save: '#90DF67',
-	background: '#F7F0F9',
-	white: '#F6EEF9',
-	black: '#000000'
+    metallicseaweed: "#028090",
+    fieryrose: "#F45B69",
+    queenblue: "#456990",
+    nyanza: "#E4FDE1",
+    lightcarminepink: "#E45869",
+    mediumturquoise: "#4ECDC4",
+    pistachio: "#90DF67",
+    black: "#000000"
 };

@@ -1,32 +1,53 @@
-import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { colors } from './src/configs/common_styles';
-import LoginScreen from './src/screens/LoginScreen';
-import FirstLogin from './src/screens/FirstLogin';
-import SignUpScreen from './src/screens/SignUpScreen';
-import TabsProfile from './src/screens/profiles/TabsProfile';
+import React, { Component } from "react";
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
+import { Provider } from "react-redux";
 
-const AppNavigator = createStackNavigator(
-	{
-		Login: {
-			screen: LoginScreen
-		},
-		FirstLogin: {
-			screen: FirstLogin
-		},
-		SignUp: {
-			screen: SignUpScreen
-		},
-		TabsProfile: {
-			screen: TabsProfile,
-			navigationOptions: {
-				header: null
-			}
-		}
-	},
-	{
-		initialRouteName: 'Login'
-	}
+import configureStore from "./src/store/store";
+
+import LoginScreen from "./src/screens/LoginScreen";
+import FirstLogin from "./src/screens/FirstLogin";
+import SignUpScreen from "./src/screens/SignUpScreen";
+
+import userTabsProfile from "./src/screens/profiles/userTabsProfile";
+
+// stack navigator para autenticação e registro
+const AuthPaths = createStackNavigator({
+    Login: {
+        screen: LoginScreen
+    },
+    FirstLogin: {
+        screen: FirstLogin
+    },
+    SignUp: {
+        screen: SignUpScreen
+    }
+});
+
+const SwitchPaths = createSwitchNavigator(
+    {
+        AuthPaths: {
+            screen: AuthPaths
+        },
+        userTabsProfile: {
+            screen: userTabsProfile,
+            navigationOptions: {
+                header: null
+            }
+        }
+    },
+    { initialRouteName: "AuthPaths" }
 );
 
-export default createAppContainer(AppNavigator);
+const Navigator = createAppContainer(SwitchPaths);
+
+const store = configureStore();
+
+export default class App extends Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <Navigator />
+            </Provider>
+        );
+    }
+}
