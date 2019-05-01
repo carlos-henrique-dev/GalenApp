@@ -14,6 +14,7 @@ import { colors } from "../../configs/common_styles";
 import Axios from "axios";
 import { connect } from "react-redux";
 import { userLogin } from "../../store/ducks/user";
+import OffilineNotice from "../../components/OfflineNotice";
 
 /* export default */ class LoginScreen extends Component {
     static navigationOptions = {
@@ -26,19 +27,25 @@ import { userLogin } from "../../store/ducks/user";
             password: "henrique",
             remember: false,
             forgotPassword: false,
-            loading: false
+            loading: false,
+            disabledButtons: false
         };
         this.remember = this.state.remember;
 
         this.login = this.login.bind(this);
         this.createAccount = this.createAccount.bind(this);
         this.setLoading = this.setLoading.bind(this);
+        this.disableButtons = this.disableButtons.bind(this);
     }
 
     setLoading() {
         this.setState(prevState => {
             return { loading: !prevState.loading };
         });
+    }
+
+    disableButtons(action) {
+        this.setState({ disabledButtons: action });
     }
 
     async login() {
@@ -78,6 +85,7 @@ import { userLogin } from "../../store/ducks/user";
         return (
             <View style={styles.screen}>
                 <StatusBar backgroundColor={colors.metallicseaweed} barStyle="light-content" />
+                <OffilineNotice onChange={this.disableButtons} />
                 {this.state.loading ? (
                     <ActivityIndicator size="large" color={colors.fieryrose} />
                 ) : null}
@@ -116,7 +124,11 @@ import { userLogin } from "../../store/ducks/user";
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity onPress={this.login} style={styles.loginButton}>
+                <TouchableOpacity
+                    disabled={this.state.disabledButtons}
+                    onPress={this.login}
+                    style={styles.loginButton}
+                >
                     <Text style={styles.loginButtonText}>Entrar</Text>
                 </TouchableOpacity>
 
@@ -136,7 +148,11 @@ import { userLogin } from "../../store/ducks/user";
                     <Text style={styles.findPharmacyText}>Encontrar farmácia de plantão</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.createAccount} style={styles.loginButton}>
+                <TouchableOpacity
+                    disabled={this.state.disabledButtons}
+                    onPress={this.createAccount}
+                    style={styles.loginButton}
+                >
                     <Text style={styles.loginButtonText}>Criar conta</Text>
                 </TouchableOpacity>
             </View>

@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { colors } from "../configs/common_styles";
+
 const { height, width } = Dimensions.get("window");
+
 export default props => {
     return (
         <TouchableOpacity onPress={() => props.navigate_func()}>

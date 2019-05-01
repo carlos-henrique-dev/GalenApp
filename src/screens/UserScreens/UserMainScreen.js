@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { colors } from "../../configs/common_styles";
 import Buttons from "../../components/Buttons";
 import UserNameHeader from "../../components/UserNameHeader";
@@ -28,6 +28,7 @@ class UserMainScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
                 <Buttons
                     title="Buscar farmácias de plantão"
                     size={20}
