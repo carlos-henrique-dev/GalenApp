@@ -10,11 +10,14 @@ import {
     ScrollView,
     Platform
 } from "react-native";
+import { Header } from "react-navigation";
 import { connect } from "react-redux";
 import { colors } from "../../configs/common_styles";
 import ImagePicker from "react-native-image-picker";
 import { api } from "../../configs/api";
 import PostProductForm from "../../components/PostProductForm";
+
+import HideWithKeyboard from "react-native-hide-with-keyboard";
 
 class AddProductScreen extends Component {
     static navigationOptions = {
@@ -99,11 +102,8 @@ class AddProductScreen extends Component {
         const { file } = this.state;
         return (
             <View style={{ flex: 1 }}>
-                <ScrollView>
-                    <KeyboardAvoidingView
-                        style={{ flex: 1, justifyContent: "space-between" }}
-                        behavior="padding"
-                    >
+                <ScrollView style={{ flex: 1 }}>
+                    <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
                         {this.state.loading ? (
                             <ActivityIndicator size="large" color={colors.fieryrose} />
                         ) : null}
@@ -118,7 +118,9 @@ class AddProductScreen extends Component {
                         <Text>Insira uma imagem do produto</Text>
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <Button title="ola" onPress={() => {}} />
+                <HideWithKeyboard>
+                    <Button title="ola" onPress={() => {}} />
+                </HideWithKeyboard>
             </View>
         );
     }
