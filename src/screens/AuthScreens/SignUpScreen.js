@@ -15,7 +15,7 @@ import { colors } from "../../configs/common_styles";
 import InputComponent from "../../components/InputComponent";
 import Footer from "../../components/Footer";
 import Axios from "axios";
-import { server } from "../../configs/api";
+import { api } from "../../configs/api";
 
 export default class SignUpScreen extends Component {
     static navigationOptions = {
@@ -62,7 +62,7 @@ export default class SignUpScreen extends Component {
     async signUp() {
         if (this.state.password === this.state.repetpassword) {
             this.setLoading();
-            Axios.post(`${server}user/signup`, {
+            api.post("user/signup", {
                 email: this.state.email,
                 name: this.state.user,
                 password: this.state.password,
@@ -99,18 +99,19 @@ export default class SignUpScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
+                {/* <View style={styles.container}> */}
                 <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
                 {this.state.loading ? (
                     <ActivityIndicator size="large" color={colors.fieryrose} />
                 ) : null}
                 {this.state.loginType === "custumer" ? (
-                    /*     <View style={styles.loginArea}> */
-                    <KeyboardAvoidingView behavior="height" style={styles.loginArea} enabled>
+                    <View style={{ flexGrow: 1 }}>
                         <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
                         <InputComponent
                             icon="user"
                             placeholder="usuário"
+                            returnKeyType="next"
                             placeholderTextColor={colors.nyanza}
                             value={this.state.user}
                             onChangeText={user => this.setState({ ...this.state, user: user })}
@@ -118,6 +119,7 @@ export default class SignUpScreen extends Component {
                         <InputComponent
                             icon="at"
                             placeholder="e-mail"
+                            returnKeyType="next"
                             placeholderTextColor={colors.nyanza}
                             value={this.state.email}
                             onChangeText={email => this.setState({ ...this.state, email: email })}
@@ -125,6 +127,7 @@ export default class SignUpScreen extends Component {
                         <InputComponent
                             icon="lock"
                             placeholder="senha"
+                            returnKeyType="next"
                             placeholderTextColor={colors.nyanza}
                             secureTextEntry={false}
                             value={this.state.password}
@@ -135,6 +138,7 @@ export default class SignUpScreen extends Component {
                         <InputComponent
                             icon="lock"
                             placeholder="Confirme a senha"
+                            returnKeyType="go"
                             placeholderTextColor={colors.nyanza}
                             secureTextEntry={false}
                             value={this.state.repetpassword}
@@ -142,17 +146,8 @@ export default class SignUpScreen extends Component {
                                 this.setState({ ...this.state, repetpassword: repetpassword })
                             }
                         />
-                        <View style={styles.footer}>
-                            <Footer
-                                title1="Cancelar"
-                                title2="Cadastrar"
-                                navigate={() => this.props.navigation.goBack()}
-                                signup={this.signUp}
-                            />
-                        </View>
-                    </KeyboardAvoidingView>
+                    </View>
                 ) : (
-                    /* </View> */
                     <View style={styles.loginArea}>
                         <ScrollView style={{ flex: 1 }}>
                             <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
@@ -305,17 +300,18 @@ export default class SignUpScreen extends Component {
                                 }
                             />
                         </ScrollView>
-                        <View style={styles.footer}>
-                            <Footer
-                                onRegister={this.signUp}
-                                title1="Cancelar"
-                                title2="Cadastrar"
-                                navigate={this.props.navigation.goBack}
-                            />
-                        </View>
                     </View>
                 )}
-            </View>
+
+                <View style={styles.footer}>
+                    <Footer
+                        title1="Cancelar"
+                        title2="Cadastrar"
+                        navigate={() => this.props.navigation.goBack()}
+                        signup={this.signUp}
+                    />
+                </View>
+            </KeyboardAvoidingView>
         );
     }
 }
@@ -326,8 +322,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.metallicseaweed
     },
     footer: {
-        position: "absolute",
-        bottom: 5
+        /*  position: "absolute",
+        bottom: 5 */
     },
     loginArea: {
         flex: 1,

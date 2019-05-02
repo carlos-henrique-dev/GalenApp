@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
-import Axios from "axios";
-import { server } from "../../configs/api";
+import { api } from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import plusIcon from "../../assets/icon_plus.png";
 import Product from "../../components/Product";
@@ -31,7 +30,7 @@ export default class ProductScreen extends Component {
     }
 
     loadProducts() {
-        Axios.get(`${server}products`)
+        api.get("products")
             .then(produtctsList => {
                 console.log("products", produtctsList.data.products);
                 this.setState({ products: produtctsList.data.products, refreshing: false });
@@ -70,7 +69,11 @@ export default class ProductScreen extends Component {
                 />
                 <TouchableOpacity
                     style={styles.addButtonContainer}
-                    onPress={() => this.props.navigation.navigate("AddProductScreen")}
+                    onPress={() =>
+                        this.props.navigation.navigate("AddProductScreen", {
+                            loadproducts: this.loadProducts
+                        })
+                    }
                 >
                     <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
                 </TouchableOpacity>

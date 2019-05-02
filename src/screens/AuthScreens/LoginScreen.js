@@ -9,9 +9,8 @@ import {
     ActivityIndicator
 } from "react-native";
 import InputComponent from "../../components/InputComponent";
-import { server } from "../../configs/api";
+import { api } from "../../configs/api";
 import { colors } from "../../configs/common_styles";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { userLogin } from "../../store/ducks/user";
 import OffilineNotice from "../../components/OfflineNotice";
@@ -52,12 +51,12 @@ import OffilineNotice from "../../components/OfflineNotice";
         this.setLoading();
         if (this.state.email.trim() !== "" && this.state.password.trim() !== "") {
             try {
-                const res = await Axios.post(`${server}user/login`, {
+                const res = await api.post("user/login", {
                     email: this.state.email,
                     password: this.state.password
                 });
                 if (res.status === 200) {
-                    Axios.defaults.headers.common["Authorization"] = `bearer ${
+                    api.defaults.headers.common["Authorization"] = `bearer ${
                         res.data.response.token
                     }`;
                     this.props.saveLoginData(res.data.response);

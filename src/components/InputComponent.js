@@ -9,6 +9,7 @@ export default props => {
             <Icon name={props.icon} size={20} style={styles.icon} />
             <TextInput
                 {...props}
+                returnKeyType={props.returnKeyType}
                 style={[styles.input, props.style]}
                 autoCapitalize="none"
                 numberOfLines={2}

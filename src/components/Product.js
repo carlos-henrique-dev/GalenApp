@@ -30,7 +30,7 @@ export default props => {
                 )}
 
                 {product.userWhoPostedType === "costumer" ? (
-                    <Text style={styles.prodPlace} numberOfLines={2}>{`Onde foi comprado: ${
+                    <Text style={styles.prodPlace} numberOfLines={2}>{`Comprado na: ${
                         product.whereToBuy
                     }`}</Text>
                 ) : (
@@ -104,6 +104,9 @@ const styles = StyleSheet.create({
     },
     postedBy: {
         margin: 2,
+        position: "absolute",
+        bottom: 5,
+        right: 5,
         fontSize: 14,
         color: colors.metallicseaweed,
         textAlign: "center"

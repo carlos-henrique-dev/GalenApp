@@ -1,3 +1,7 @@
-const server = "https://backend-gallen.herokuapp.com/";
+import axios from "axios";
 
-export { server };
+const api = axios.create({
+    baseURL: "https://backend-gallen.herokuapp.com/"
+});
+
+export { api };
