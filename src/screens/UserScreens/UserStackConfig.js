@@ -4,6 +4,7 @@ import UserMainScreen from "./UserMainScreen";
 import DrugstoreStack from "../DrugstoreScreens/DrugstoreStackConfig";
 import ProductsScreen from "../ProductsScreens/ProductsScreen";
 import AddProductScreen from "../ProductsScreens/AddProductScreen";
+import UserProductsScreen from "../ProductsScreens/UserProductsScreen";
 import UserSettingsScreen from "./UserSettingsScreen";
 
 const ProfileNavigator = createStackNavigator({
@@ -11,6 +12,7 @@ const ProfileNavigator = createStackNavigator({
     DrugstoreStack,
     ProductsScreen,
     AddProductScreen,
+    UserProductsScreen,
     UserSettingsScreen
 });
 

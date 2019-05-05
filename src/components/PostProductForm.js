@@ -11,7 +11,10 @@ import {
     Alert
 } from "react-native";
 import { colors } from "../configs/common_styles";
+
 import ImagePicker from "react-native-image-picker";
+import ImageResizer from "react-native-image-resizer";
+
 const { width } = Dimensions.get("window");
 
 export default class PostProductForm extends Component {
@@ -19,9 +22,9 @@ export default class PostProductForm extends Component {
         super(props);
         this.state = {
             file: null,
-            name: "Testando",
-            price: "10",
-            whereToBuy: "lá na farmácia",
+            name: "",
+            price: "",
+            whereToBuy: "",
             onSale: false
         };
         this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
@@ -42,9 +45,16 @@ export default class PostProductForm extends Component {
             } else if (response.didCancel) {
                 console.log("cancelou");
             } else {
-                console.log("response: ", response);
+                console.log("response", response);
                 if (response.fileSize > 3 * 1024 * 1024) {
-                    Alert.alert("Erro", "Arquivo muito grande");
+                    ImageResizer.createResizedImage(response.uri, 800, 600, "JPEG", 80)
+                        .then(compressResponse => {
+                            console.log("comprimido", compressResponse);
+                            this.setState({ file: compressResponse });
+                        })
+                        .catch(err => {
+                            Alert.alert("Erro", "Erro na compressão do arquivo");
+                        });
                 } else {
                     this.setState({ file: response });
                 }

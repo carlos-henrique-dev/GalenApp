@@ -30,6 +30,7 @@ export default function reducer(state = initialState, action) {
 }
 
 export function userLogin(data) {
+    console.log(data);
     return {
         type: Types.USER_LOGIN,
         payload: {

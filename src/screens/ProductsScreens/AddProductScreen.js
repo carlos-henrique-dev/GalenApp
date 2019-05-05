@@ -48,8 +48,8 @@ class AddProductScreen extends Component {
         const data = new FormData();
         data.append("file", {
             uri: file.uri,
-            name: file.fileName,
-            type: file.type
+            name: file.fileName || file.name,
+            type: file.type || "image/jpeg"
         });
         data.append("userWhoPostedType", this.state.userWhoPostedType);
         data.append("userWhoPostedId", this.state.userWhoPostedId);
@@ -66,7 +66,6 @@ class AddProductScreen extends Component {
                 }
             })
             .then(result => {
-                console.log("result", result);
                 if (result.status === 200) {
                     this.setLoading();
                     this.props.navigation.state.params.loadproducts();

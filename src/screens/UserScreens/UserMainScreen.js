@@ -54,6 +54,10 @@ class UserMainScreen extends Component {
                     title="Pesquisar produtos"
                     navigate_func={() => this._navigate("ProductsScreen")}
                 />
+                <Buttons
+                    title="Meus produtos"
+                    navigate_func={() => this._navigate("UserProductsScreen")}
+                />
             </View>
         );
     }
