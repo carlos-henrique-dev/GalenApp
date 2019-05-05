@@ -1,18 +1,30 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, StatusBar } from "react-native";
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
 import { colors } from "../../configs/common_styles";
 import Buttons from "../../components/Buttons";
+import Icon from "react-native-vector-icons/FontAwesome";
 import UserNameHeader from "../../components/UserNameHeader";
 import { connect } from "react-redux";
 
 class UserMainScreen extends Component {
-    static navigationOptions = {
-        headerTitle: <UserNameHeader />,
-        headerLeft: null,
-        headerTintColor: colors.nyanza,
-        headerStyle: {
-            backgroundColor: colors.fieryrose
-        }
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerTitle: <UserNameHeader />,
+            headerRight: (
+                <TouchableOpacity
+                    style={{ margin: 5, marginRight: 10 }}
+                    onPress={() => {
+                        navigation.navigate("UserSettingsScreen");
+                    }}
+                >
+                    <Icon name="cogs" size={25} color={colors.nyanza} />
+                </TouchableOpacity>
+            ),
+            headerTintColor: colors.nyanza,
+            headerStyle: {
+                backgroundColor: colors.fieryrose
+            }
+        };
     };
 
     constructor(props) {

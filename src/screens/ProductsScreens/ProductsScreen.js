@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
-import { api } from "../../configs/api";
+import api from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import plusIcon from "../../assets/icon_plus.png";
 import Product from "../../components/Product";
@@ -32,7 +32,6 @@ export default class ProductScreen extends Component {
     loadProducts() {
         api.get("products")
             .then(produtctsList => {
-                console.log("products", produtctsList.data.products);
                 this.setState({ products: produtctsList.data.products, refreshing: false });
             })
             .catch(error => {

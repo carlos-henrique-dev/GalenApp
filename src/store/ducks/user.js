@@ -1,6 +1,3 @@
-import { AsyncStorage } from "react-native";
-import axios from "axios";
-
 export const Types = {
     USER_LOGIN: "USER_LOGIN",
     USER_LOGOUT: "USER_LOGOUT",

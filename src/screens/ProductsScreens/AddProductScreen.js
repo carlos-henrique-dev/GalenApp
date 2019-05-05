@@ -2,22 +2,17 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    Image,
-    Button,
     ActivityIndicator,
     Alert,
     KeyboardAvoidingView,
     ScrollView,
+    StyleSheet,
     Platform
 } from "react-native";
-import { Header } from "react-navigation";
-import { connect } from "react-redux";
 import { colors } from "../../configs/common_styles";
-import ImagePicker from "react-native-image-picker";
-import { api } from "../../configs/api";
+import api from "../../configs/api";
+import { connect } from "react-redux";
 import PostProductForm from "../../components/PostProductForm";
-
-import HideWithKeyboard from "react-native-hide-with-keyboard";
 
 class AddProductScreen extends Component {
     static navigationOptions = {
@@ -31,43 +26,47 @@ class AddProductScreen extends Component {
         super(props);
         this.state = {
             loading: false,
-            file: null,
             userWhoPostedType: "costumer",
-            userWhoPostedId: "5cc8be8bff3b9e0f84fe3c37",
-            userWhoPostedName: "Carlos Henrique",
-            name: "Produto novinho 2",
-            price: "30.90",
-            whereToBuy: "Farmacia da vila",
-            onSale: "true"
+            userWhoPostedId: "",
+            userWhoPostedName: ""
         };
 
-        this.handleUploadPhoto = this.handleUploadPhoto.bind(this);
-        this.handleGetPhoto = this.handleGetPhoto.bind(this);
+        this.handlUploadProduct = this.handlUploadProduct.bind(this);
         this.setLoading = this.setLoading.bind(this);
+    }
+
+    componentDidMount() {
+        this.setState({ userWhoPostedName: this.props.userName, userWhoPostedId: this.props.id });
     }
 
     setLoading() {
         this.setState({ loading: !this.state.loading });
     }
 
-    handleUploadPhoto() {
+    async handlUploadProduct(file, name, price, whereToBuy, onSale) {
+        this.setLoading();
         const data = new FormData();
-
         data.append("file", {
-            uri: this.state.file.uri,
-            type: this.state.file.type,
-            name: this.state.file.fileName
+            uri: file.uri,
+            name: file.fileName,
+            type: file.type
         });
         data.append("userWhoPostedType", this.state.userWhoPostedType);
         data.append("userWhoPostedId", this.state.userWhoPostedId);
         data.append("userWhoPostedName", this.state.userWhoPostedName);
-        data.append("name", this.state.name);
-        data.append("price", this.state.price);
-        data.append("whereToBuy", this.state.whereToBuy);
-        data.append("onSale", this.state.onSale);
+        data.append("name", name);
+        data.append("price", price);
+        data.append("whereToBuy", whereToBuy);
+        data.append("onSale", onSale);
 
-        api.post("products", data)
+        await api
+            .post("products", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
             .then(result => {
+                console.log("result", result);
                 if (result.status === 200) {
                     this.setLoading();
                     this.props.navigation.state.params.loadproducts();
@@ -76,59 +75,56 @@ class AddProductScreen extends Component {
             })
             .catch(err => {
                 this.setLoading();
+                console.log("erro", err.message);
                 Alert.alert("Erro", "Ocorreu um erro ao realizar a postagem");
             });
     }
 
-    handleGetPhoto() {
-        ImagePicker.launchCamera({}, async response => {
-            if (response.error) {
-                console.log("erro: ", response.error);
-            } else if (response.didCancel) {
-                console.log("cancelou");
-            } else {
-                this.setLoading();
-                if (response.fileSize / 1024 <= 2 * 1024 * 1024) {
-                    this.setState({ file: response });
-                } else {
-                    this.setLoading();
-                    Alert.alert("Erro", "Arquivo muito grande");
-                }
-            }
-        });
-    }
-
     render() {
-        const { file } = this.state;
         return (
-            <View style={{ flex: 1 }}>
-                <ScrollView style={{ flex: 1 }}>
-                    <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
-                        {this.state.loading ? (
-                            <ActivityIndicator size="large" color={colors.fieryrose} />
-                        ) : null}
-                        <View style={{ flex: 1 }}>
-                            <PostProductForm />
-                        </View>
-                        <Text>Insira uma imagem do produto</Text>
-                        <Text>Insira uma imagem do produto</Text>
-                        <Text>Insira uma imagem do produto</Text>
-                        <Text>Insira uma imagem do produto</Text>
-                        <Text>Insira uma imagem do produto</Text>
-                        <Text>Insira uma imagem do produto</Text>
-                    </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={styles.container}
+            >
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    {this.state.loading ? (
+                        <ActivityIndicator size="large" color={colors.fieryrose} />
+                    ) : null}
+                    <Text style={styles.title}>
+                        Insira abaixo os dados do produto adquirido e ajude outras pessoas, que
+                        também precisando, a encontrar
+                    </Text>
+                    <View style={{ flex: 1 }}>
+                        <PostProductForm
+                            onPost={this.handlUploadProduct}
+                            onCancel={this.props.navigation.goBack}
+                        />
+                    </View>
                 </ScrollView>
-                <HideWithKeyboard>
-                    <Button title="ola" onPress={() => {}} />
-                </HideWithKeyboard>
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 }
 
 const mapStateToProps = state => {
     return {
-        name: state.user.name
+        id: state.user.id,
+        userName: state.user.name
     };
 };
+
 export default connect(mapStateToProps)(AddProductScreen);
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    title: {
+        fontSize: 14,
+        color: colors.queenblue,
+        textAlign: "center",
+        margin: 15
+    }
+});

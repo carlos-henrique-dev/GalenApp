@@ -5,17 +5,12 @@ import { Provider } from "react-redux";
 import configureStore from "./src/store/store";
 
 import AuthPaths from "./src/screens/AuthScreens/AuthStackConfig";
-import UserPaths from "./src/screens/UserScreens/UserTabsConfig";
+import UserPaths from "./src/screens/UserScreens/UserStackConfig";
 
 const SwitchPaths = createSwitchNavigator(
     {
         AuthPaths,
-        UserPaths /* : {
-            screen: UserPaths,
-            navigationOptions: {
-                header: null
-            }
-        } */
+        UserPaths
     },
     { initialRouteName: "AuthPaths" }
 );

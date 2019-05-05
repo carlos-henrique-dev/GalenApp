@@ -9,7 +9,7 @@ import {
     ActivityIndicator
 } from "react-native";
 import InputComponent from "../../components/InputComponent";
-import { api } from "../../configs/api";
+import api from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import { connect } from "react-redux";
 import { userLogin } from "../../store/ducks/user";
@@ -68,7 +68,7 @@ import OffilineNotice from "../../components/OfflineNotice";
                 }
             } catch (error) {
                 this.setLoading();
-                Alert.alert("erro", "Erro no login" + error);
+                Alert.alert("erro", "Erro no login: " + error);
             }
         } else {
             this.setLoading();

@@ -10,12 +10,10 @@ import {
     KeyboardAvoidingView,
     ActivityIndicator
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../configs/common_styles";
 import InputComponent from "../../components/InputComponent";
 import Footer from "../../components/Footer";
-import Axios from "axios";
-import { api } from "../../configs/api";
+import api from "../../configs/api";
 
 export default class SignUpScreen extends Component {
     static navigationOptions = {
@@ -82,6 +80,7 @@ export default class SignUpScreen extends Component {
                     }
                 })
                 .catch(err => {
+                    console.log("erro", err);
                     if (err.response.status === 409) {
                         this.setLoading();
                         Alert.alert("Erro", "Email já cadastrado");
