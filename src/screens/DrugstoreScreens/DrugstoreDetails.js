@@ -1,15 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+import { createOpenLink } from "react-native-open-maps";
 import { colors } from "../../configs/common_styles";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 export default class componentName extends Component {
     static navigationOptions = ({ navigation }) => ({
         title: navigation.state.params.data.name,
         headerTintColor: colors.nyanza,
-        headerStyle: {
-            backgroundColor: colors.fieryrose
+        headerTransparent: true,
+        headerTitleStyle: {
+            fontWeight: "bold",
+            color: colors.nyanza,
+            textShadowColor: colors.black,
+            textShadowOffset: { width: 2, height: 2 },
+            textShadowRadius: 10
         }
     });
 
@@ -21,6 +27,15 @@ export default class componentName extends Component {
     }
 
     render() {
+        const openDrugstoreOnMap = createOpenLink({
+            latitude: Number.parseFloat(this.state.data.address.gpsCoordinates.latitude),
+            longitude: Number.parseFloat(this.state.data.address.gpsCoordinates.longitude),
+            provider: "google",
+            end: `${this.state.data.address.gpsCoordinates.latitude}, ${
+                this.state.data.address.gpsCoordinates.longitude
+            }`
+        });
+
         return (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
@@ -36,31 +51,20 @@ export default class componentName extends Component {
                         </Text>
                     )}
                 </View>
-                {/* <View style={styles.detailContainer}>
-                    <View>
-                        <Text style={styles.contactTitle}>Contatos:</Text>
-                        <View>
-                            {this.state.data.contact.tel ? (
-                                <View style={{ flexDirection: "row" }}>
-                                    <Text style={styles.telCel}>Tel:</Text>
-                                    <Text style={styles.telCelNumber}>
-                                        {this.state.data.contact.tel}
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View>
-                        <View>
-                            {this.state.data.contact.cel ? (
-                                <View style={{ flexDirection: "row" }}>
-                                    <Text style={styles.telCel}>Cel:</Text>
-                                    <Text style={styles.telCelNumber}>
-                                        {this.state.data.contact.cel}
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View>
+                <View style={styles.detailContainer}>
+                    <View style={styles.contactContainer}>
+                        <Text style={styles.contactTitle}>
+                            {this.state.data.contacts.lenght > 1 ? "Contato" : "Contatos"}
+                        </Text>
+                        {this.state.data.contacts.map(contact => {
+                            return (
+                                <Text key={contact._id} style={styles.contact}>
+                                    {`(${contact.areacode}) ${contact.number}`}
+                                </Text>
+                            );
+                        })}
                     </View>
-                    <View>
+                    <View style={styles.addressContainer}>
                         <Text style={styles.addressTitle}>Endereço</Text>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.addressSubTitle}>Rua:</Text>
@@ -71,7 +75,7 @@ export default class componentName extends Component {
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.addressSubTitle}>Bairro:</Text>
                             <Text style={styles.addressContent}>
-                                {this.state.data.address.neighbourhood}
+                                {this.state.data.address.neighborhood}
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
@@ -82,6 +86,11 @@ export default class componentName extends Component {
                         </View>
                     </View>
                 </View>
+                <TouchableOpacity onPress={openDrugstoreOnMap}>
+                    <Text style={styles.openMap}>Abrir no mapa</Text>
+                </TouchableOpacity>
+                {/*  
+                TODO: verificar se é uma farmácia temporária ou não
                 <View style={styles.productButton}>
                     <Text style={styles.productText}>Ver produtos comprados nesta farmácia</Text>
                 </View> */}
@@ -112,42 +121,51 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     detailContainer: {
-        width: width,
+        marginTop: 15,
+        width: width - 10,
         alignContent: "flex-start",
-        marginLeft: 15,
+        marginLeft: 5,
         borderLeftWidth: 1,
         borderLeftColor: colors.mainPurple,
         padding: 5
+    },
+    contactContainer: {
+        padding: 10
     },
     contactTitle: {
         fontSize: 18,
         color: colors.mainPurple,
         fontWeight: "bold",
-        marginBottom: 5
+        marginBottom: 5,
+        color: colors.queenblue
     },
-    telCel: {
+    contact: {
+        color: colors.black,
         fontSize: 16,
         fontWeight: "bold",
         marginRight: 10,
-        marginBottom: 5
+        marginBottom: 8
     },
-    telCelNumber: {
-        fontSize: 16
+    addressContainer: {
+        padding: 10
     },
     addressTitle: {
         fontSize: 18,
-        color: colors.mainPurple,
+        color: colors.queenblue,
         fontWeight: "bold",
         marginBottom: 5
     },
     addressSubTitle: {
+        color: colors.black,
         fontSize: 16,
         fontWeight: "bold",
         marginRight: 10,
         marginBottom: 5
     },
     addressContent: {
-        fontSize: 16
+        color: colors.black,
+        fontSize: 16,
+        marginTop: 2
     },
     productButton: {
         marginTop: 20,
@@ -161,5 +179,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: colors.white,
         textAlign: "center"
+    },
+    openMap: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: colors.pistachio,
+        margin: 10
     }
 });

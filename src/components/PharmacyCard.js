@@ -11,11 +11,16 @@ export default props => {
             <View style={styles.infoContainer}>
                 <View style={styles.imageContainer}>
                     {props.data.photo.photo_url ? (
-                        <Image source={{ uri: props.data.photo.photo_url }} style={styles.image} />
+                        <Image
+                            source={{ uri: props.data.photo.photo_url }}
+                            style={styles.image}
+                            resizeMode="contain"
+                        />
                     ) : (
                         <Text style={styles.imageText}>Imagem não disponível</Text>
                     )}
                 </View>
+
                 <View style={styles.dataContainer}>
                     <Text style={styles.title}>{props.data.name}</Text>
                     <Text style={styles.contact}>
@@ -44,7 +49,7 @@ export default props => {
 const styles = StyleSheet.create({
     container: {
         width: width - 15,
-        height: (height * 30) / 100,
+        height: (height * 25) / 100,
         justifyContent: "center",
         flexDirection: "column",
         alignSelf: "center",
@@ -65,12 +70,13 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         width: (width * 30) / 100,
-        height: "65%",
+        height: "75%",
         justifyContent: "center",
         marginLeft: 10,
         marginTop: 20
     },
     dataContainer: {
+        marginTop: 20,
         width: "65%",
         height: "100%",
         alignItems: "center"
@@ -86,6 +92,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
         color: colors.mainPurple,
+        marginTop: 0,
         margin: 5
     },
     contactContainer: {
@@ -111,6 +118,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         textAlign: "center",
-        color: colors.mainPurple
+        color: colors.pistachio
     }
 });

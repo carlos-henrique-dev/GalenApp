@@ -29,7 +29,6 @@ export default class OnDutyScreen extends Component {
     }
 
     loadDrugstores() {
-        console.log("opa");
         api.get("allnight_drugstore")
             .then(drugstores_list => {
                 this.setState({
@@ -67,9 +66,7 @@ export default class OnDutyScreen extends Component {
                             }
                         />
                     )}
-                    keyExtractor={item => {
-                        item._id;
-                    }}
+                    keyExtractor={item => item._id}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatList}
                     refreshing={this.state.refreshing}
