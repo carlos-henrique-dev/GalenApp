@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import api from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import { connect } from "react-redux";
-import plusIcon from "../../assets/icon_plus.png";
 import Product from "../../components/Product";
 
 class ProductScreen extends Component {
@@ -31,7 +30,8 @@ class ProductScreen extends Component {
     componentDidMount() {
         this.setState(
             {
-                searchID: this.props.idToSearch === null ? this.props.userId : this.props.idToSearch
+                searchID:
+                    this.props.idToSearch === undefined ? this.props.userId : this.props.idToSearch
             },
             () => {
                 this.loadProducts();

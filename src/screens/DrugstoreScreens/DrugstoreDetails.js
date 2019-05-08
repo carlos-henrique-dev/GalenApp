@@ -7,14 +7,12 @@ const { height, width } = Dimensions.get("window");
 export default class componentName extends Component {
     static navigationOptions = ({ navigation }) => ({
         title: navigation.state.params.data.name,
-        headerTintColor: colors.mainBlue,
+        headerTintColor: colors.nyanza,
         headerStyle: {
-            backgroundColor: colors.mainPurple
-        },
-        headerTitleStyle: {
-            color: colors.mainBlue
+            backgroundColor: colors.fieryrose
         }
     });
+
     constructor(props) {
         super(props);
         this.state = {
@@ -26,10 +24,10 @@ export default class componentName extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    {this.state.data.image ? (
+                    {this.state.data.photo.photo_url ? (
                         <Image
                             resizeMode="stretch"
-                            source={{ uri: this.state.data.image }}
+                            source={{ uri: this.state.data.photo.photo_url }}
                             style={styles.image}
                         />
                     ) : (
@@ -38,7 +36,7 @@ export default class componentName extends Component {
                         </Text>
                     )}
                 </View>
-                <View style={styles.detailContainer}>
+                {/* <View style={styles.detailContainer}>
                     <View>
                         <Text style={styles.contactTitle}>Contatos:</Text>
                         <View>
@@ -86,7 +84,7 @@ export default class componentName extends Component {
                 </View>
                 <View style={styles.productButton}>
                     <Text style={styles.productText}>Ver produtos comprados nesta farmácia</Text>
-                </View>
+                </View> */}
             </View>
         );
     }
