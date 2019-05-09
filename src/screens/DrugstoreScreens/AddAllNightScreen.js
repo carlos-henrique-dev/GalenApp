@@ -7,6 +7,7 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     StyleSheet,
+    TouchableOpacity,
     Platform
 } from "react-native";
 import { colors } from "../../configs/common_styles";

@@ -1,11 +1,11 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../configs/common_styles";
 
 const { height, width } = Dimensions.get("window");
 
 export default props => {
+    console.log("props", props);
     return (
         <View elevation={5} style={styles.container}>
             <View style={styles.infoContainer}>
@@ -23,17 +23,11 @@ export default props => {
 
                 <View style={styles.dataContainer}>
                     <Text style={styles.title}>{props.data.name}</Text>
-                    <Text style={styles.contact}>
-                        {props.data.contacts.lenght > 1 ? "Contato" : "Contatos"}
-                    </Text>
+                    <Text style={styles.contact}>Contato</Text>
                     <View style={styles.contactContainer}>
-                        {props.data.contacts.map(contact => {
-                            return (
-                                <Text key={contact._id} style={styles.pharmacyContact}>
-                                    {`(${contact.areacode}) ${contact.number}`}
-                                </Text>
-                            );
-                        })}
+                        <Text style={styles.pharmacyContact}>
+                            {`(${props.data.contact.areacode}) ${props.data.contact.number}`}
+                        </Text>
                     </View>
                 </View>
             </View>

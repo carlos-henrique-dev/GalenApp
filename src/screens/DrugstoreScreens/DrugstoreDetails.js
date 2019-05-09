@@ -53,16 +53,27 @@ export default class componentName extends Component {
                 </View>
                 <View style={styles.detailContainer}>
                     <View style={styles.contactContainer}>
-                        <Text style={styles.contactTitle}>
-                            {this.state.data.contacts.lenght > 1 ? "Contato" : "Contatos"}
-                        </Text>
-                        {this.state.data.contacts.map(contact => {
-                            return (
-                                <Text key={contact._id} style={styles.contact}>
-                                    {`(${contact.areacode}) ${contact.number}`}
+                        {this.state.data.type === "temporary" ? (
+                            <View>
+                                <Text style={styles.contactTitle}>Contato: </Text>
+                                <Text style={styles.contact}>
+                                    {`(${this.state.data.contact.areacode}) ${
+                                        this.state.data.contact.number
+                                    }`}
                                 </Text>
-                            );
-                        })}
+                            </View>
+                        ) : (
+                            <View>
+                                <Text style={styles.contactTitle}>Contatos: </Text>
+                                {this.state.data.contacts.map(contact => {
+                                    return (
+                                        <Text key={contact._id} style={styles.contact}>
+                                            {`(${contact.areacode}) ${contact.number}`}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
+                        )}
                     </View>
                     <View style={styles.addressContainer}>
                         <Text style={styles.addressTitle}>Endereço</Text>

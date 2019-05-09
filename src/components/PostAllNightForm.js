@@ -11,9 +11,11 @@ import {
     Alert
 } from "react-native";
 import { colors } from "../configs/common_styles";
+import { mapskey } from "../configs/maps";
 
 import ImagePicker from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
+import Geocoder from "react-native-geocoding";
 
 const { width } = Dimensions.get("window");
 
@@ -22,14 +24,26 @@ export default class PostProductForm extends Component {
         super(props);
         this.state = {
             file: null,
-            name: "",
-            price: "",
-            whereToBuy: "",
+            drugstorename: "",
+            contacts: [],
+            address: {
+                streetName: "",
+                neighborhoodName: "",
+                number: "",
+                gpsCoordinates: {
+                    latitude: "",
+                    longitude: ""
+                }
+            },
             onSale: false
         };
         this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
         this.handleGetPhoto = this.handleGetPhoto.bind(this);
         this.sendProductData = this.sendProductData.bind(this);
+    }
+
+    componentDidMount() {
+        Geocoder.init(mapskey, { language: "pt" });
     }
 
     handleGetPhoto() {
@@ -85,27 +99,52 @@ export default class PostProductForm extends Component {
         this.setState({ onSale: !this.state.onSale });
     }
 
+    getUserPosition = () => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                this.setState(
+                    prevState => ({
+                        address: {
+                            ...prevState.address,
+                            gpsCoordinates: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            }
+                        }
+                    }),
+                    () => {
+                        console.log("state", this.state);
+                    }
+                );
+            },
+            err => {
+                console.log("error", err);
+            }
+        );
+    };
+
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.textArea}>
-                    {this.state.name !== "" ? (
-                        <Text style={styles.text}> Nome do produto </Text>
+                    {this.state.drugstorename !== "" ? (
+                        <Text style={styles.text}> Nome da farmácia </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Nome do produto"
+                        placeholder="Nome da farmácia"
                         style={styles.textInput}
-                        value={this.state.name}
+                        value={this.state.drugstorename}
                         placeholderTextColor={colors.queenblue}
-                        onChangeText={name => this.setState({ name: name })}
+                        onChangeText={drugstorename =>
+                            this.setState({ drugstorename: drugstorename })
+                        }
                     />
                 </View>
+                <Text style={styles.contactsTitle}> Contatos </Text>
                 <View style={styles.textArea}>
-                    {this.state.price !== "" ? (
-                        <Text style={styles.text}> Preço do produto </Text>
-                    ) : null}
+                    {this.state.price !== "" ? <Text style={styles.text}> Contato 1 </Text> : null}
                     <TextInput
-                        placeholder="Preço do produto"
+                        placeholder="Contato 1"
                         style={styles.textInput}
                         value={this.state.price}
                         keyboardType="number-pad"
@@ -149,6 +188,10 @@ export default class PostProductForm extends Component {
                     </View>
                 </View>
 
+                <TouchableOpacity onPress={this.getUserPosition}>
+                    <Text>Pegar a localização</Text>
+                </TouchableOpacity>
+
                 <View style={styles.footButtons}>
                     <TouchableOpacity
                         onPress={() => {
@@ -190,6 +233,11 @@ const styles = StyleSheet.create({
         left: 15,
         fontSize: 12,
         color: colors.queenblue
+    },
+    contactsTitle: {
+        fontSize: 18,
+        color: colors.queenblue,
+        margin: 2
     },
     switchArea: {
         flexDirection: "row",
