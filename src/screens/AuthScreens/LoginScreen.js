@@ -6,7 +6,10 @@ import {
     TouchableOpacity,
     StatusBar,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView
 } from "react-native";
 import InputComponent from "../../components/InputComponent";
 import api from "../../configs/api";
@@ -15,7 +18,7 @@ import { connect } from "react-redux";
 import { userLogin } from "../../store/ducks/user";
 import OffilineNotice from "../../components/OfflineNotice";
 
-/* export default */ class LoginScreen extends Component {
+class LoginScreen extends Component {
     static navigationOptions = {
         header: null
     };
@@ -88,48 +91,70 @@ import OffilineNotice from "../../components/OfflineNotice";
                 {this.state.loading ? (
                     <ActivityIndicator size="large" color={colors.fieryrose} />
                 ) : null}
-                <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
-                <View style={styles.inputBox}>
-                    <InputComponent
-                        icon="user"
-                        placeholder="usuário"
-                        placeholderTextColor={colors.fieryrose}
-                        value={this.state.email}
-                        onChangeText={email => this.setState({ ...this.state, email: email })}
-                    />
-                    <InputComponent
-                        icon="lock"
-                        placeholder="senha"
-                        placeholderTextColor={colors.fieryrose}
-                        secureTextEntry={false}
-                        value={this.state.password}
-                        onChangeText={password =>
-                            this.setState({ ...this.state, password: password })
-                        }
-                    />
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : null}
+                    style={{
+                        flex: 1,
+                        width: "100%"
 
-                    <TouchableOpacity
-                        onPress={() => this.setState({ remember: !this.state.remember })}
-                        style={styles.rememberButton}
-                    >
-                        <Text
-                            style={[
-                                styles.rememberText,
-                                this.state.remember === true ? styles.rememberTextTrue : null
-                            ]}
-                        >
-                            Lembre-se de mim
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity
-                    disabled={this.state.disabledButtons}
-                    onPress={this.login}
-                    style={styles.loginButton}
+                        //backgroundColor: "#f00"
+                    }}
                 >
-                    <Text style={styles.loginButtonText}>Entrar</Text>
-                </TouchableOpacity>
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}
+                    >
+                        <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
+                        <View style={styles.inputBox}>
+                            <InputComponent
+                                icon="user"
+                                placeholder="usuário"
+                                placeholderTextColor={colors.fieryrose}
+                                value={this.state.email}
+                                onChangeText={email =>
+                                    this.setState({ ...this.state, email: email })
+                                }
+                            />
+                            <InputComponent
+                                icon="lock"
+                                placeholder="senha"
+                                placeholderTextColor={colors.fieryrose}
+                                secureTextEntry={false}
+                                value={this.state.password}
+                                onChangeText={password =>
+                                    this.setState({ ...this.state, password: password })
+                                }
+                            />
+
+                            <TouchableOpacity
+                                onPress={() => this.setState({ remember: !this.state.remember })}
+                                style={styles.rememberButton}
+                            >
+                                <Text
+                                    style={[
+                                        styles.rememberText,
+                                        this.state.remember === true
+                                            ? styles.rememberTextTrue
+                                            : null
+                                    ]}
+                                >
+                                    Lembre-se de mim
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity
+                            disabled={this.state.disabledButtons}
+                            onPress={this.login}
+                            style={styles.loginButton}
+                        >
+                            <Text style={styles.loginButtonText}>Entrar</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </KeyboardAvoidingView>
 
                 {this.state.forgotPassword ? (
                     <TouchableOpacity
@@ -176,7 +201,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     inputBox: {
-        width: "85%",
+        width: "100%",
         height: 200,
         padding: 10,
         marginTop: 10,
@@ -186,8 +211,8 @@ const styles = StyleSheet.create({
     },
     // login button
     loginButton: {
-        width: 150,
-        height: 50,
+        width: 100,
+        height: 30,
         margin: 5,
         backgroundColor: colors.fieryrose,
         borderRadius: 10,

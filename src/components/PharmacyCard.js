@@ -1,11 +1,15 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
 import { colors } from "../configs/common_styles";
+import call from "react-native-phone-call";
 
 const { height, width } = Dimensions.get("window");
 
 export default props => {
-    console.log("props", props);
+    makeCall = number => {
+        call({ number, prompt: true }).catch(error => console.log(error));
+    };
+
     return (
         <View elevation={5} style={styles.container}>
             <View style={styles.infoContainer}>
@@ -24,11 +28,18 @@ export default props => {
                 <View style={styles.dataContainer}>
                     <Text style={styles.title}>{props.data.name}</Text>
                     <Text style={styles.contact}>Contato</Text>
-                    <View style={styles.contactContainer}>
+                    <TouchableOpacity
+                        style={styles.contactContainer}
+                        onPress={() =>
+                            this.makeCall(
+                                `${props.data.contact.areacode}${props.data.contact.number}`
+                            )
+                        }
+                    >
                         <Text style={styles.pharmacyContact}>
                             {`(${props.data.contact.areacode}) ${props.data.contact.number}`}
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.detailContainer}>

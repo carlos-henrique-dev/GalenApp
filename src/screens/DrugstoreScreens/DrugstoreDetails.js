@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { colors } from "../../configs/common_styles";
+import call from "react-native-phone-call";
 
 const { width } = Dimensions.get("window");
 
@@ -25,6 +26,10 @@ export default class componentName extends Component {
             data: props.navigation.state.params.data
         };
     }
+
+    makeCall = number => {
+        call({ number, prompt: true }).catch(error => console.log(error));
+    };
 
     render() {
         const openDrugstoreOnMap = createOpenLink({
@@ -56,11 +61,21 @@ export default class componentName extends Component {
                         {this.state.data.type === "temporary" ? (
                             <View>
                                 <Text style={styles.contactTitle}>Contato: </Text>
-                                <Text style={styles.contact}>
-                                    {`(${this.state.data.contact.areacode}) ${
-                                        this.state.data.contact.number
-                                    }`}
-                                </Text>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        this.makeCall(
+                                            `${this.state.data.contact.areacode}${
+                                                this.state.data.contact.number
+                                            }`
+                                        )
+                                    }
+                                >
+                                    <Text style={styles.contact}>
+                                        {`(${this.state.data.contact.areacode}) ${
+                                            this.state.data.contact.number
+                                        }`}
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         ) : (
                             <View>

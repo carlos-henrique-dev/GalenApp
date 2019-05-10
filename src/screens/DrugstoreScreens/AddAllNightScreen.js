@@ -44,32 +44,33 @@ class AddAllNightScreen extends Component {
         this.setState({ loading: !this.state.loading });
     }
 
-    async handlUploadProduct(file, name, price, whereToBuy, onSale) {
+    async handlUploadProduct(file, drugstorename, formattedContact, address) {
         this.setLoading();
         const data = new FormData();
-        data.append("file", {
-            uri: file.uri,
-            name: file.fileName || file.name,
-            type: file.type || "image/jpeg"
-        });
+        if (file !== null) {
+            data.append("file", {
+                uri: file.uri,
+                name: file.fileName || file.name,
+                type: file.type || "image/jpeg"
+            });
+        }
         data.append("userWhoPostedType", this.state.userWhoPostedType);
         data.append("userWhoPostedId", this.state.userWhoPostedId);
         data.append("userWhoPostedName", this.state.userWhoPostedName);
-        data.append("name", name);
-        data.append("price", price);
-        data.append("whereToBuy", whereToBuy);
-        data.append("onSale", onSale);
+        data.append("drugstorename", drugstorename);
+        data.append("contact", JSON.stringify(formattedContact));
+        data.append("address", JSON.stringify(address));
 
         await api
-            .post("products", data, {
+            .post("allnight_drugstore", data, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             })
             .then(result => {
-                if (result.status === 200) {
+                if (result.status === 201) {
                     this.setLoading();
-                    this.props.navigation.state.params.loadproducts();
+                    this.props.navigation.state.params.loadDrugstores();
                     this.props.navigation.goBack();
                 }
             })
@@ -125,6 +126,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: colors.queenblue,
         textAlign: "center",
-        margin: 15
+        margin: 10
     }
 });

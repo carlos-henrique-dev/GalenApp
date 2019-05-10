@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     TextInput,
     Dimensions,
-    Switch,
     Image,
     Alert
 } from "react-native";
@@ -24,22 +23,16 @@ export default class PostProductForm extends Component {
         super(props);
         this.state = {
             file: null,
-            drugstorename: "",
-            contacts: [],
-            address: {
-                streetName: "",
-                neighborhoodName: "",
-                number: "",
-                gpsCoordinates: {
-                    latitude: "",
-                    longitude: ""
-                }
-            },
-            onSale: false
+            drugstorename: "Teste farmácia celular",
+            contact: "6734815910",
+            streetName: "Rua teste",
+            neighborhoodName: "vila teste",
+            number: "",
+            latitude: "",
+            longitude: ""
         };
-        this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
         this.handleGetPhoto = this.handleGetPhoto.bind(this);
-        this.sendProductData = this.sendProductData.bind(this);
+        this.sendDrugstoreData = this.sendDrugstoreData.bind(this);
     }
 
     componentDidMount() {
@@ -59,11 +52,9 @@ export default class PostProductForm extends Component {
             } else if (response.didCancel) {
                 console.log("cancelou");
             } else {
-                console.log("response", response);
                 if (response.fileSize > 3 * 1024 * 1024) {
                     ImageResizer.createResizedImage(response.uri, 800, 600, "JPEG", 80)
                         .then(compressResponse => {
-                            console.log("comprimido", compressResponse);
                             this.setState({ file: compressResponse });
                         })
                         .catch(err => {
@@ -76,50 +67,53 @@ export default class PostProductForm extends Component {
         });
     }
 
-    sendProductData() {
+    sendDrugstoreData() {
         if (
-            this.state.file !== null &&
-            this.state.name.trim() !== "" &&
-            this.state.price.trim() !== "" &&
-            this.state.whereToBuy.trim() !== ""
+            this.state.drugstorename.trim() !== "" &&
+            this.state.contact.trim() !== "" &&
+            this.state.neighborhoodName.trim() !== ""
         ) {
-            this.props.onPost(
-                this.state.file,
-                this.state.name,
-                this.state.price,
-                this.state.whereToBuy,
-                this.state.onSale
-            );
+            const splitAreacode = this.state.contact.split("", 2);
+            const splitNumber = this.state.contact.slice(2);
+
+            const formattedContact = {
+                areacode: `${splitAreacode[0]}${splitAreacode[1]}`,
+                number: splitNumber
+            };
+
+            const address = {
+                streetName: this.state.streetName,
+                neighborhoodName: this.state.neighborhoodName,
+                number: this.state.number,
+                gpsCoordinates: {
+                    latitude: this.state.latitude,
+                    longitude: this.state.longitude
+                }
+            };
+
+            this.props.onPost(this.state.file, this.state.drugstorename, formattedContact, address);
         } else {
-            alert("preencha os campos corretamente");
+            alert("preencha os campos com * corretamente");
         }
     }
 
-    handleToggleSwitch() {
-        this.setState({ onSale: !this.state.onSale });
-    }
-
-    getUserPosition = () => {
+    getUserPosition = async () => {
         navigator.geolocation.getCurrentPosition(
-            position => {
-                this.setState(
-                    prevState => ({
-                        address: {
-                            ...prevState.address,
-                            gpsCoordinates: {
-                                latitude: position.coords.latitude,
-                                longitude: position.coords.longitude
-                            }
-                        }
-                    }),
-                    () => {
-                        console.log("state", this.state);
-                    }
-                );
+            async ({ coords: { latitude, longitude } }) => {
+                const response = await Geocoder.from({ latitude, longitude });
+                const address = response.results[0].address_components;
+
+                this.setState({
+                    streetName: address[1].long_name,
+                    number: address[0].long_name,
+                    latitude: latitude,
+                    longitude: longitude
+                });
             },
             err => {
-                console.log("error", err);
-            }
+                console.log("err", err);
+            },
+            { enableHighAccuracy: true }
         );
     };
 
@@ -128,10 +122,10 @@ export default class PostProductForm extends Component {
             <View style={styles.container}>
                 <View style={styles.textArea}>
                     {this.state.drugstorename !== "" ? (
-                        <Text style={styles.text}> Nome da farmácia </Text>
+                        <Text style={styles.text}> Nome da farmácia * </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Nome da farmácia"
+                        placeholder="Nome da farmácia *"
                         style={styles.textInput}
                         value={this.state.drugstorename}
                         placeholderTextColor={colors.queenblue}
@@ -140,40 +134,61 @@ export default class PostProductForm extends Component {
                         }
                     />
                 </View>
-                <Text style={styles.contactsTitle}> Contatos </Text>
                 <View style={styles.textArea}>
-                    {this.state.price !== "" ? <Text style={styles.text}> Contato 1 </Text> : null}
-                    <TextInput
-                        placeholder="Contato 1"
-                        style={styles.textInput}
-                        value={this.state.price}
-                        keyboardType="number-pad"
-                        placeholderTextColor={colors.queenblue}
-                        onChangeText={price => this.setState({ price: price })}
-                    />
-                </View>
-                <View style={styles.textArea}>
-                    {this.state.whereToBuy !== "" ? (
-                        <Text style={styles.text}> Onde comprou </Text>
+                    {this.state.contact !== "" ? (
+                        <Text style={styles.text}> Contato * </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Onde comprou"
+                        placeholder="Contato *"
                         style={styles.textInput}
-                        value={this.state.whereToBuy}
+                        value={this.state.contact}
+                        keyboardType="numeric"
+                        mas
                         placeholderTextColor={colors.queenblue}
-                        onChangeText={whereToBuy => this.setState({ whereToBuy: whereToBuy })}
+                        onChangeText={contact => this.setState({ contact: contact })}
                     />
                 </View>
-                <View style={styles.switchArea}>
-                    <Text style={styles.switchText}> Estava em promoção? </Text>
-                    <Text style={styles.switchText}>{this.state.onSale ? "Sim" : "Não"}</Text>
+                <View style={styles.textArea}>
+                    {this.state.streetName !== "" ? <Text style={styles.text}> Rua * </Text> : null}
+                    <TextInput
+                        placeholder="Rua *"
+                        style={styles.textInput}
+                        value={this.state.streetName}
+                        placeholderTextColor={colors.queenblue}
+                        onChangeText={streetName => this.setState({ streetName: streetName })}
+                    />
+                </View>
+                <View style={styles.numberNeighborArea}>
+                    {this.state.neighborhoodName !== "" ? (
+                        <Text style={styles.text}> Bairro * </Text>
+                    ) : null}
+                    <TextInput
+                        placeholder="Bairro *"
+                        style={[styles.textInput, { width: (width * 65) / 100 }]}
+                        value={this.state.neighborhoodName}
+                        placeholderTextColor={colors.queenblue}
+                        onChangeText={neighborhoodName =>
+                            this.setState({ neighborhoodName: neighborhoodName })
+                        }
+                    />
+                    <View>
+                        {this.state.number !== "" ? (
+                            <Text style={styles.text}> Número </Text>
+                        ) : null}
+                        <TextInput
+                            placeholder="Número"
+                            style={[styles.textInput, { width: (width * 25) / 100 }]}
+                            value={this.state.number}
+                            keyboardType="number-pad"
+                            placeholderTextColor={colors.queenblue}
+                            onChangeText={number => this.setState({ number: number })}
+                        />
+                    </View>
+                </View>
 
-                    <Switch
-                        onValueChange={this.handleToggleSwitch}
-                        trackColor={{ false: colors.fieryrose, true: colors.pistachio }}
-                        value={this.state.onSale}
-                    />
-                </View>
+                <TouchableOpacity onPress={this.getUserPosition} style={styles.getLocation}>
+                    <Text style={styles.getLocationText}>Pegar a localização automaticamente</Text>
+                </TouchableOpacity>
 
                 <View style={styles.imageArea}>
                     {this.state.file ? (
@@ -188,10 +203,6 @@ export default class PostProductForm extends Component {
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={this.getUserPosition}>
-                    <Text>Pegar a localização</Text>
-                </TouchableOpacity>
-
                 <View style={styles.footButtons}>
                     <TouchableOpacity
                         onPress={() => {
@@ -201,7 +212,7 @@ export default class PostProductForm extends Component {
                     >
                         <Text style={styles.imageText}>Cancelar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.sendProductData} style={styles.postButton}>
+                    <TouchableOpacity onPress={this.sendDrugstoreData} style={styles.postButton}>
                         <Text style={styles.imageText}>Postar</Text>
                     </TouchableOpacity>
                 </View>
@@ -219,13 +230,19 @@ const styles = StyleSheet.create({
     textArea: {
         alignItems: "flex-start"
     },
+    numberNeighborArea: {
+        flexDirection: "row"
+    },
     textInput: {
         borderLeftWidth: 1,
         borderBottomWidth: 1,
         borderColor: colors.fieryrose,
-        width: width - 30,
+        width: (width * 95) / 100,
         height: 45,
-        margin: 12
+        margin: 8,
+        paddingTop: 20,
+        paddingBottom: 4,
+        justifyContent: "center"
     },
     text: {
         position: "absolute",
@@ -233,11 +250,6 @@ const styles = StyleSheet.create({
         left: 15,
         fontSize: 12,
         color: colors.queenblue
-    },
-    contactsTitle: {
-        fontSize: 18,
-        color: colors.queenblue,
-        margin: 2
     },
     switchArea: {
         flexDirection: "row",
@@ -254,8 +266,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-around",
-        width: width - 30,
-        marginTop: 20
+        width: (width * 95) / 100,
+        marginTop: 10
     },
     image: {
         borderWidth: 1,
@@ -273,14 +285,15 @@ const styles = StyleSheet.create({
     },
     imageText: {
         textAlign: "center",
-        fontSize: 16
+        fontSize: 16,
+        color: colors.nyanza
     },
     footButtons: {
         flexDirection: "row",
         justifyContent: "space-between"
     },
     postButton: {
-        marginTop: 35,
+        marginTop: 20,
         margin: 10,
         backgroundColor: colors.pistachio,
         borderRadius: 10,
@@ -288,5 +301,14 @@ const styles = StyleSheet.create({
         width: (width * 40) / 100,
         alignItems: "center",
         justifyContent: "center"
+    },
+    getLocation: {
+        width: (width * 95) / 100,
+        alignItems: "center"
+    },
+    getLocationText: {
+        fontSize: 18,
+        color: colors.fieryrose,
+        fontWeight: "bold"
     }
 });

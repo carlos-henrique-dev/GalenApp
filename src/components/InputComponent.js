@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../configs/common_styles";
+
+const { width } = Dimensions.get("window");
 
 export default props => {
     return (
@@ -21,7 +23,7 @@ export default props => {
 const styles = StyleSheet.create({
     textInputArea: {
         flexDirection: "row",
-        width: "95%",
+        width: (width * 80) / 100,
         height: 45,
         margin: 5,
         marginTop: 15,

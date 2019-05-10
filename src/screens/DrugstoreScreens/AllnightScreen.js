@@ -76,7 +76,7 @@ export default class OnDutyScreen extends Component {
                     style={styles.addButtonContainer}
                     onPress={() =>
                         this.props.navigation.navigate("AddAllNightScreen", {
-                            loadproducts: this.loadDrugstores
+                            loadDrugstores: this.loadDrugstores
                         })
                     }
                 >

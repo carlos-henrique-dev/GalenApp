@@ -4919,6 +4919,11 @@ react-native-open-maps@^0.3.3:
   dependencies:
     query-string "^6.1.0"
 
+react-native-phone-call@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-phone-call/-/react-native-phone-call-1.0.9.tgz#4468ec6f95856557fbff9bd69a0db04b54c35e1d"
+  integrity sha512-OPWYg8qeWNG/U4bWGMAKcQTH/ifqJnsvUPCH4lOkvWFHbQS3fbH5M8rFhXCzcfS0GVNzHhZX9ZByMM368TFAUQ==
+
 react-native-safe-area-view@^0.13.0:
   version "0.13.1"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.13.1.tgz#834bbb6d22f76a7ff07de56725ee5667ba1386b0"
