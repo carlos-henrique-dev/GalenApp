@@ -61,12 +61,15 @@ const styles = StyleSheet.create({
         marginTop: 2,
         marginBottom: 4,
         // sombras
-        borderColor: colors.nyanza,
-        borderBottomWidth: 0,
+        padding: 5,
+        backgroundColor: colors.white,
         shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
-        shadowRadius: 2
+        shadowRadius: 2,
+        shadowOffset: {
+            height: 1,
+            width: 1
+        }
     },
     infoContainer: {
         justifyContent: "space-around",

@@ -8,10 +8,12 @@ import {
     StatusBar,
     Alert,
     KeyboardAvoidingView,
-    ActivityIndicator
+    ActivityIndicator,
+    Platform
 } from "react-native";
 import { colors } from "../../configs/common_styles";
 import InputComponent from "../../components/InputComponent";
+import HideWithKeyboard from "react-native-hide-with-keyboard";
 import Footer from "../../components/Footer";
 import api from "../../configs/api";
 
@@ -98,57 +100,80 @@ export default class SignUpScreen extends Component {
 
     render() {
         return (
-            <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
+            <View behavior="padding" style={styles.container} enabled>
                 {/* <View style={styles.container}> */}
                 <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
                 {this.state.loading ? (
                     <ActivityIndicator size="large" color={colors.fieryrose} />
                 ) : null}
                 {this.state.loginType === "custumer" ? (
-                    <View style={{ flexGrow: 1 }}>
-                        <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
-                        <InputComponent
-                            icon="user"
-                            placeholder="usuário"
-                            returnKeyType="next"
-                            placeholderTextColor={colors.nyanza}
-                            value={this.state.user}
-                            onChangeText={user => this.setState({ ...this.state, user: user })}
-                        />
-                        <InputComponent
-                            icon="at"
-                            placeholder="e-mail"
-                            returnKeyType="next"
-                            placeholderTextColor={colors.nyanza}
-                            value={this.state.email}
-                            onChangeText={email => this.setState({ ...this.state, email: email })}
-                        />
-                        <InputComponent
-                            icon="lock"
-                            placeholder="senha"
-                            returnKeyType="next"
-                            placeholderTextColor={colors.nyanza}
-                            secureTextEntry={false}
-                            value={this.state.password}
-                            onChangeText={password =>
-                                this.setState({ ...this.state, password: password })
-                            }
-                        />
-                        <InputComponent
-                            icon="lock"
-                            placeholder="Confirme a senha"
-                            returnKeyType="go"
-                            placeholderTextColor={colors.nyanza}
-                            secureTextEntry={false}
-                            value={this.state.repetpassword}
-                            onChangeText={repetpassword =>
-                                this.setState({ ...this.state, repetpassword: repetpassword })
-                            }
-                        />
-                    </View>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === "ios" ? "padding" : null}
+                        style={{
+                            flex: 1,
+                            width: "100%"
+                        }}
+                    >
+                        <ScrollView
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                                marginTop: 10
+                            }}
+                        >
+                            <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
+                            <InputComponent
+                                icon="user"
+                                placeholder="usuário"
+                                returnKeyType="next"
+                                placeholderTextColor={colors.nyanza}
+                                value={this.state.user}
+                                onChangeText={user => this.setState({ ...this.state, user: user })}
+                            />
+                            <InputComponent
+                                icon="at"
+                                placeholder="e-mail"
+                                returnKeyType="next"
+                                placeholderTextColor={colors.nyanza}
+                                value={this.state.email}
+                                onChangeText={email =>
+                                    this.setState({ ...this.state, email: email })
+                                }
+                            />
+                            <InputComponent
+                                icon="lock"
+                                placeholder="senha"
+                                returnKeyType="next"
+                                placeholderTextColor={colors.nyanza}
+                                secureTextEntry={false}
+                                value={this.state.password}
+                                onChangeText={password =>
+                                    this.setState({ ...this.state, password: password })
+                                }
+                            />
+                            <InputComponent
+                                icon="lock"
+                                placeholder="Confirme a senha"
+                                returnKeyType="go"
+                                placeholderTextColor={colors.nyanza}
+                                secureTextEntry={false}
+                                value={this.state.repetpassword}
+                                onChangeText={repetpassword =>
+                                    this.setState({ ...this.state, repetpassword: repetpassword })
+                                }
+                            />
+                        </ScrollView>
+                    </KeyboardAvoidingView>
                 ) : (
-                    <View style={styles.loginArea}>
-                        <ScrollView style={{ flex: 1 }}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === "ios" ? "padding" : null}
+                        style={{
+                            flex: 1,
+                            width: "100%"
+                        }}
+                    >
+                        <ScrollView contentContainerStyle={styles.loginArea}>
                             <Text style={styles.loginAreaTitle}> Informe os seguintes dados </Text>
                             <InputComponent
                                 icon="building"
@@ -299,18 +324,18 @@ export default class SignUpScreen extends Component {
                                 }
                             />
                         </ScrollView>
-                    </View>
+                    </KeyboardAvoidingView>
                 )}
 
-                <View style={styles.footer}>
+                <HideWithKeyboard style={styles.footer}>
                     <Footer
                         title1="Cancelar"
                         title2="Cadastrar"
                         navigate={() => this.props.navigation.goBack()}
                         signup={this.signUp}
                     />
-                </View>
-            </KeyboardAvoidingView>
+                </HideWithKeyboard>
+            </View>
         );
     }
 }
@@ -325,10 +350,11 @@ const styles = StyleSheet.create({
         bottom: 5 */
     },
     loginArea: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: "center",
         margin: 5,
-        padding: 5
+        padding: 5,
+        paddingBottom: 50
     },
     loginAreaTitle: {
         fontWeight: "bold",
@@ -339,16 +365,16 @@ const styles = StyleSheet.create({
         margin: 15,
         fontSize: 18,
         marginLeft: 10,
-        color: colors.mainPurple
+        color: colors.nyanza
     },
     pickImageIcon: {
-        color: colors.mainPurple,
+        color: colors.nyanza,
         marginLeft: 5,
         marginRight: 5
     },
     subTitle: {
         marginTop: 10,
-        color: colors.mainPurple,
+        color: colors.nyanza,
         fontSize: 18,
         fontWeight: "bold"
     }

@@ -34,7 +34,7 @@ class UserMainScreen extends Component {
     }
 
     _navigate = path => {
-        this.props.navigation.navigate(path);
+        this.props.navigation.navigate(path, { authorized: true });
     };
 
     render() {

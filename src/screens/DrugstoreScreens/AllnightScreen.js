@@ -72,16 +72,19 @@ export default class OnDutyScreen extends Component {
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
                 />
-                <TouchableOpacity
-                    style={styles.addButtonContainer}
-                    onPress={() =>
-                        this.props.navigation.navigate("AddAllNightScreen", {
-                            loadDrugstores: this.loadDrugstores
-                        })
-                    }
-                >
-                    <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
-                </TouchableOpacity>
+
+                {this.props.navigation.state.params.authorized ? (
+                    <TouchableOpacity
+                        style={styles.addButtonContainer}
+                        onPress={() =>
+                            this.props.navigation.navigate("AddAllNightScreen", {
+                                loadDrugstores: this.loadDrugstores
+                            })
+                        }
+                    >
+                        <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
+                    </TouchableOpacity>
+                ) : null}
             </View>
         );
     }

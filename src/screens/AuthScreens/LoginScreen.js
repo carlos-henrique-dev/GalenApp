@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
-    ScrollView
+    ScrollView,
+    AsyncStorage
 } from "react-native";
 import InputComponent from "../../components/InputComponent";
 import api from "../../configs/api";
@@ -17,6 +18,7 @@ import { colors } from "../../configs/common_styles";
 import { connect } from "react-redux";
 import { userLogin } from "../../store/ducks/user";
 import OffilineNotice from "../../components/OfflineNotice";
+import HideWithKeyboard from "react-native-hide-with-keyboard";
 
 class LoginScreen extends Component {
     static navigationOptions = {
@@ -62,9 +64,13 @@ class LoginScreen extends Component {
                     api.defaults.headers.common["Authorization"] = `bearer ${
                         res.data.response.token
                     }`;
-                    this.props.saveLoginData(res.data.response);
-                    this.setLoading();
-                    this.props.navigation.navigate("UserPaths");
+                    await AsyncStorage.setItem("data", JSON.stringify(res.data.response)).then(
+                        () => {
+                            this.props.saveLoginData(res.data.response);
+                            this.setLoading();
+                            this.props.navigation.navigate("UserPaths");
+                        }
+                    );
                 } else if (res.status === 401) {
                     this.setLoading();
                     Alert.alert("Erro", "Dados inválidos");
@@ -96,8 +102,6 @@ class LoginScreen extends Component {
                     style={{
                         flex: 1,
                         width: "100%"
-
-                        //backgroundColor: "#f00"
                     }}
                 >
                     <ScrollView
@@ -165,20 +169,24 @@ class LoginScreen extends Component {
                     </TouchableOpacity>
                 ) : null}
 
-                <TouchableOpacity
-                    onPress={() => alert("encontrando farmácia")}
-                    style={styles.findPharmacyButton}
-                >
-                    <Text style={styles.findPharmacyText}>Encontrar farmácia de plantão</Text>
-                </TouchableOpacity>
+                <HideWithKeyboard style={{ alignItems: "center", justifyContent: "center" }}>
+                    <TouchableOpacity
+                        onPress={() =>
+                            this.props.navigation.navigate("AllnightScreen", { authorized: false })
+                        }
+                        style={styles.findPharmacyButton}
+                    >
+                        <Text style={styles.findPharmacyText}>Encontrar farmácia de plantão</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity
-                    disabled={this.state.disabledButtons}
-                    onPress={this.createAccount}
-                    style={styles.loginButton}
-                >
-                    <Text style={styles.loginButtonText}>Criar conta</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        disabled={this.state.disabledButtons}
+                        onPress={this.createAccount}
+                        style={styles.loginButton}
+                    >
+                        <Text style={styles.loginButtonText}>Criar conta</Text>
+                    </TouchableOpacity>
+                </HideWithKeyboard>
             </View>
         );
     }
