@@ -4,14 +4,27 @@ import { colors } from "../../configs/common_styles";
 import api from "../../configs/api";
 import plusIcon from "../../assets/icon_plus.png";
 import PharmacyCard from "../../components/PharmacyCard";
+import { HeaderBackButton } from "react-navigation";
 
-export default class OnDutyScreen extends Component {
-    static navigationOptions = {
-        headerTitle: "Farmácias de plantão",
-        headerTintColor: colors.nyanza,
-        headerStyle: {
-            backgroundColor: colors.fieryrose
-        }
+export default class AllnightScreen extends Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerTitle: "Farmácias de plantão",
+            headerTintColor: colors.nyanza,
+            headerStyle: {
+                backgroundColor: colors.fieryrose
+            },
+            headerLeft: (
+                <HeaderBackButton
+                    tintColor={colors.nyanza}
+                    onPress={() =>
+                        navigation.state.params.authorized
+                            ? navigation.goBack()
+                            : navigation.navigate("LoginScreen")
+                    }
+                />
+            )
+        };
     };
     constructor(props) {
         super(props);

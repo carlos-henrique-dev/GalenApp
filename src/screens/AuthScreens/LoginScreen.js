@@ -38,6 +38,7 @@ class LoginScreen extends Component {
 
         this.login = this.login.bind(this);
         this.createAccount = this.createAccount.bind(this);
+        this.searchAllnight = this.searchAllnight.bind(this);
         this.setLoading = this.setLoading.bind(this);
         this.disableButtons = this.disableButtons.bind(this);
     }
@@ -87,6 +88,10 @@ class LoginScreen extends Component {
 
     createAccount() {
         this.props.navigation.navigate("FirstLogin");
+    }
+
+    searchAllnight() {
+        this.props.navigation.navigate("AllnightScreen", { authorized: false });
     }
 
     render() {
@@ -171,9 +176,7 @@ class LoginScreen extends Component {
 
                 <HideWithKeyboard style={{ alignItems: "center", justifyContent: "center" }}>
                     <TouchableOpacity
-                        onPress={() =>
-                            this.props.navigation.navigate("AllnightScreen", { authorized: false })
-                        }
+                        onPress={this.searchAllnight}
                         style={styles.findPharmacyButton}
                     >
                         <Text style={styles.findPharmacyText}>Encontrar farmácia de plantão</Text>
