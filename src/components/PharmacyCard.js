@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     detail: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: "bold",
         textAlign: "center",
         color: colors.pistachio
