@@ -4,15 +4,17 @@ import { Provider } from "react-redux";
 
 import configureStore from "./src/store/store";
 
+import SplashScreen from "./src/screens/AuthScreens/SplashScreen";
 import AuthPaths from "./src/screens/AuthScreens/AuthStackConfig";
 import UserPaths from "./src/screens/UserScreens/UserStackConfig";
 
 const SwitchPaths = createSwitchNavigator(
     {
+        SplashScreen,
         AuthPaths,
         UserPaths
     },
-    { initialRouteName: "AuthPaths" }
+    { initialRouteName: "SplashScreen" }
 );
 
 const Navigator = createAppContainer(SwitchPaths);

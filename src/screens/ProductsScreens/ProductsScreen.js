@@ -51,29 +51,41 @@ export default class ProductScreen extends Component {
         );
     }
 
+    openUserList = (userID, userName) => {
+        this.props.navigation.navigate("UserProductsScreen", {
+            idToSearch: userID,
+            userName: userName
+        });
+    };
+
+    plusButton = () => {
+        this.props.navigation.navigate("AddProductScreen", {
+            loadproducts: this.loadProducts
+        });
+    };
+
+    filter = () => {
+        alert("filtrando");
+    };
+
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.filter} onPress={() => alert("filtrando")}>
+                <TouchableOpacity style={styles.filter} onPress={this.filter}>
                     <Text style={styles.filterText}>Filtros</Text>
                 </TouchableOpacity>
                 <FlatList
                     data={this.state.products}
-                    renderItem={({ item }) => <Product product={item} />}
+                    renderItem={({ item }) => (
+                        <Product product={item} publicList openUserList={this.openUserList} />
+                    )}
                     keyExtractor={item => `${item._id}`}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatList}
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
                 />
-                <TouchableOpacity
-                    style={styles.addButtonContainer}
-                    onPress={() =>
-                        this.props.navigation.navigate("AddProductScreen", {
-                            loadproducts: this.loadProducts
-                        })
-                    }
-                >
+                <TouchableOpacity style={styles.addButtonContainer} onPress={this.plusButton}>
                     <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
                 </TouchableOpacity>
             </View>

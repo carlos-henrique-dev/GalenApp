@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, StatusBar, ActivityIndicator, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
+import api from "../../configs/api";
 import { userLogin } from "../../store/ducks/user";
 import { colors } from "../../configs/common_styles";
 
@@ -25,9 +26,10 @@ class SplashScreen extends Component {
                 const res = JSON.parse(result) || null;
 
                 if (res !== null) {
+                    api.defaults.headers.common["Authorization"] = `bearer ${res.token}`;
                     this.props.saveLoginData(res);
                     this.setLoading();
-                    this.props.navigation.navigate("UserPaths");
+                    this.props.navigation.navigate("UserMainScreen");
                 } else {
                     this.props.navigation.navigate("LoginScreen");
                 }

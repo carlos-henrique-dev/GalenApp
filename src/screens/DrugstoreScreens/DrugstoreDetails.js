@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Dimensions,
+    TouchableOpacity,
+    StatusBar
+} from "react-native";
 import { createOpenLink } from "react-native-open-maps";
 import { colors } from "../../configs/common_styles";
 import call from "react-native-phone-call";
@@ -43,6 +51,7 @@ export default class componentName extends Component {
 
         return (
             <View style={styles.container}>
+                <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
                 <View style={styles.imageContainer}>
                     {this.state.data.photo.photo_url ? (
                         <Image

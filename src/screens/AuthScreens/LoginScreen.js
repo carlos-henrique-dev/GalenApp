@@ -13,6 +13,7 @@ import {
     AsyncStorage
 } from "react-native";
 import InputComponent from "../../components/InputComponent";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import api from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import { connect } from "react-redux";
@@ -27,8 +28,8 @@ class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "henrique2@mail.com",
-            password: "henrique",
+            email: "",
+            password: "",
             remember: false,
             forgotPassword: false,
             loading: false,
@@ -65,13 +66,19 @@ class LoginScreen extends Component {
                     api.defaults.headers.common["Authorization"] = `bearer ${
                         res.data.response.token
                     }`;
-                    await AsyncStorage.setItem("data", JSON.stringify(res.data.response)).then(
-                        () => {
-                            this.props.saveLoginData(res.data.response);
-                            this.setLoading();
-                            this.props.navigation.navigate("UserPaths");
-                        }
-                    );
+                    if (this.state.remember) {
+                        await AsyncStorage.setItem("data", JSON.stringify(res.data.response)).then(
+                            () => {
+                                this.props.saveLoginData(res.data.response);
+                                this.setLoading();
+                                this.props.navigation.navigate("UserPaths");
+                            }
+                        );
+                    } else {
+                        this.props.saveLoginData(res.data.response);
+                        this.setLoading();
+                        this.props.navigation.navigate("UserPaths");
+                    }
                 } else if (res.status === 401) {
                     this.setLoading();
                     Alert.alert("Erro", "Dados inválidos");
@@ -91,7 +98,7 @@ class LoginScreen extends Component {
     }
 
     searchAllnight() {
-        this.props.navigation.navigate("AllnightScreen", { authorized: false });
+        this.props.navigation.navigate("AllnightScreenPublic", { authorized: false });
     }
 
     render() {
@@ -142,6 +149,15 @@ class LoginScreen extends Component {
                                 onPress={() => this.setState({ remember: !this.state.remember })}
                                 style={styles.rememberButton}
                             >
+                                <Ionicons
+                                    name="ios-checkmark"
+                                    size={50}
+                                    style={
+                                        this.state.remember
+                                            ? styles.rememberIconTrue
+                                            : styles.rememberIconFalse
+                                    }
+                                />
                                 <Text
                                     style={[
                                         styles.rememberText,
@@ -222,17 +238,17 @@ const styles = StyleSheet.create({
     },
     // login button
     loginButton: {
-        width: 100,
-        height: 30,
-        margin: 5,
+        width: 150,
+        height: 40,
+        margin: 10,
         backgroundColor: colors.fieryrose,
-        borderRadius: 10,
+        borderRadius: 4,
         alignItems: "center",
         justifyContent: "center"
     },
     loginButtonText: {
         color: colors.nyanza,
-        fontSize: 28,
+        fontSize: 20,
         fontWeight: "bold"
     },
     forgotButton: {
@@ -245,15 +261,26 @@ const styles = StyleSheet.create({
     },
     // remember-me
     rememberButton: {
-        margin: 5
+        marginTop: 20,
+        margin: 5,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
     },
     rememberText: {
+        paddingLeft: 15,
         color: colors.nyanza,
         fontSize: 16,
         textAlign: "center"
     },
     rememberTextTrue: {
+        color: colors.pistachio
+    },
+    rememberIconFalse: {
         color: colors.nyanza
+    },
+    rememberIconTrue: {
+        color: colors.pistachio
     },
 
     // find drugstore
@@ -265,10 +292,10 @@ const styles = StyleSheet.create({
         color: colors.nyanza,
         fontSize: 22,
         textAlign: "center"
-    },
+    }
 
     // create account
-    loginButton: {
+    /* loginButton: {
         width: 150,
         height: 50,
         marginBottom: 5,
@@ -276,5 +303,5 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center"
-    }
+    } */
 });

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar } from "react-native";
 import { colors } from "../../configs/common_styles";
 import api from "../../configs/api";
 import plusIcon from "../../assets/icon_plus.png";
@@ -69,13 +69,16 @@ export default class AllnightScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
                 <FlatList
                     data={this.state.drugstores}
                     renderItem={({ item }) => (
                         <PharmacyCard
                             data={item}
                             navigate={() =>
-                                this.props.navigation.navigate("DrugstoreDetails", { data: item })
+                                this.props.navigation.navigate("AllnightScreenDetail", {
+                                    data: item
+                                })
                             }
                         />
                     )}

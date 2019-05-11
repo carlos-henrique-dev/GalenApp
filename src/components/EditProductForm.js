@@ -21,17 +21,21 @@ export default class PostProductForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            file: null,
-            name: "",
-            price: "",
-            whereToBuy: "",
-            onSale: false
+            /* file: null, */
+            name: this.props.product.name,
+            price: `${this.props.product.price}`,
+            whereToBuy: this.props.product.whereToBuy,
+            onSale: this.props.product.onSale
         };
         this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
-        this.handleGetPhoto = this.handleGetPhoto.bind(this);
+        /*       this.handleGetPhoto = this.handleGetPhoto.bind(this); */
         this.sendProductData = this.sendProductData.bind(this);
     }
 
+    /*     componentDidMount() {
+        const { photo_url: uri, photo_id, key } = this.props.product.photo;
+        this.setState({ file: { uri, photo_id, key } });
+    } 
     handleGetPhoto() {
         const options = {
             noData: true,
@@ -59,17 +63,18 @@ export default class PostProductForm extends Component {
                 }
             }
         });
-    }
+    } 
+    */
 
     sendProductData() {
         if (
-            this.state.file !== null &&
+            /* this.state.file !== null && */
             this.state.name.trim() !== "" &&
             this.state.price.trim() !== "" &&
             this.state.whereToBuy.trim() !== ""
         ) {
-            this.props.onPost(
-                this.state.file,
+            this.props.onEdit(
+                /* this.state.file, */
                 this.state.name,
                 this.state.price,
                 this.state.whereToBuy,
@@ -89,10 +94,10 @@ export default class PostProductForm extends Component {
             <View style={styles.container}>
                 <View style={styles.textArea}>
                     {this.state.name !== "" ? (
-                        <Text style={styles.text}> Nome do produto </Text>
+                        <Text style={styles.text}> Nome do produto * </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Nome do produto"
+                        placeholder="Nome do produto *"
                         style={styles.textInput}
                         value={this.state.name}
                         placeholderTextColor={colors.queenblue}
@@ -101,10 +106,10 @@ export default class PostProductForm extends Component {
                 </View>
                 <View style={styles.textArea}>
                     {this.state.price !== "" ? (
-                        <Text style={styles.text}> Preço do produto </Text>
+                        <Text style={styles.text}> Preço do produto * </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Preço do produto"
+                        placeholder="Preço do produto *"
                         style={styles.textInput}
                         value={this.state.price}
                         keyboardType="number-pad"
@@ -114,10 +119,10 @@ export default class PostProductForm extends Component {
                 </View>
                 <View style={styles.textArea}>
                     {this.state.whereToBuy !== "" ? (
-                        <Text style={styles.text}> Onde comprou </Text>
+                        <Text style={styles.text}> Onde comprou * </Text>
                     ) : null}
                     <TextInput
-                        placeholder="Onde comprou"
+                        placeholder="Onde comprou *"
                         style={styles.textInput}
                         value={this.state.whereToBuy}
                         placeholderTextColor={colors.queenblue}
@@ -135,7 +140,7 @@ export default class PostProductForm extends Component {
                     />
                 </View>
 
-                <View style={styles.imageArea}>
+                {/*  <View style={styles.imageArea}>
                     {this.state.file ? (
                         <Image source={{ uri: this.state.file.uri }} style={styles.image} />
                     ) : (
@@ -143,10 +148,10 @@ export default class PostProductForm extends Component {
                     )}
                     <View>
                         <TouchableOpacity onPress={this.handleGetPhoto} style={styles.imageButton}>
-                            <Text style={styles.imageText}>Insira uma foto</Text>
+                            <Text style={styles.imageText}>Insira uma foto *</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </View> */}
 
                 <View style={styles.footButtons}>
                     <TouchableOpacity
@@ -158,7 +163,7 @@ export default class PostProductForm extends Component {
                         <Text style={styles.imageText}>Cancelar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.sendProductData} style={styles.postButton}>
-                        <Text style={styles.imageText}>Postar</Text>
+                        <Text style={styles.imageText}>Editar</Text>
                     </TouchableOpacity>
                 </View>
             </View>

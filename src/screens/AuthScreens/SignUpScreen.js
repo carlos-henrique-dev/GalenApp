@@ -31,10 +31,10 @@ export default class SignUpScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: "Henrique",
-            password: "henrique",
-            repetpassword: "henrique",
-            email: "henrique2@mail.com",
+            user: "",
+            password: "",
+            repetpassword: "",
+            email: "",
             companyName: "",
             CPNJ: "",
             street: "",

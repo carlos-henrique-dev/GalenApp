@@ -1,18 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import api from "../../configs/api";
 import { colors } from "../../configs/common_styles";
 import { connect } from "react-redux";
 import Product from "../../components/Product";
 
 class ProductScreen extends Component {
-    static navigationOptions = {
-        headerTitle: "Produtos",
+    static navigationOptions = ({ navigation }) => ({
+        headerTitle: navigation.state.params.userName
+            ? `Produtos de ${navigation.state.params.userName}`
+            : "Seus Produtos",
         headerTintColor: colors.nyanza,
         headerStyle: {
-            backgroundColor: colors.fieryrose
+            backgroundColor: colors.fieryrose,
+            fontSize: 10
         }
-    };
+    });
 
     constructor(props) {
         super(props);
@@ -31,7 +34,9 @@ class ProductScreen extends Component {
         this.setState(
             {
                 searchID:
-                    this.props.idToSearch === undefined ? this.props.userId : this.props.idToSearch
+                    this.props.navigation.state.params.idToSearch === undefined
+                        ? this.props.userId
+                        : this.props.navigation.state.params.idToSearch
             },
             () => {
                 this.loadProducts();
@@ -45,13 +50,11 @@ class ProductScreen extends Component {
 
     loadProducts() {
         this.setLoading();
-        api.get(`products/${this.state.searchID}`)
-            .then(produtctsList => {
+
+        api.get(`products/user_product/${this.state.searchID}`)
+            .then(produtcsList => {
                 this.setLoading();
-                this.setState(
-                    { products: produtctsList.data.product, refreshing: false },
-                    () => {}
-                );
+                this.setState({ products: produtcsList.data.product, refreshing: false }, () => {});
             })
             .catch(error => {
                 this.setLoading();
@@ -71,10 +74,51 @@ class ProductScreen extends Component {
         );
     }
 
+    removeProducts = productId => {
+        Alert.alert("Confirmação de exclusão", "Deseja mesmo excluir este produto?", [
+            { text: "Cancelar", style: "cancel" },
+            {
+                text: "Sim",
+                onPress: () => {
+                    this.setLoading();
+                    api.delete(`products/${productId}`)
+                        .then(result => {
+                            if (result.status === 200) {
+                                Alert.alert("Sucesso", "Produdo excluído com sucesso");
+                                this.loadProducts();
+                            }
+                            Alert.alert("Erro", "Erro ao excluir o produto");
+                        })
+                        .catch(err => Alert.alert("Erro", `Erro ao excluir o produto: ${err}`));
+                }
+            }
+        ]);
+    };
+
+    editProducts = productId => {
+        this.setLoading();
+        api.get(`products/one_product/${productId}`)
+            .then(product => {
+                this.props.navigation.navigate("EditProductScreen", {
+                    loadproducts: this.loadProducts,
+                    product: product.data
+                });
+            })
+            .catch(error => {
+                this.setLoading();
+                console.log("erro", error);
+                this.setState({ refreshing: false });
+            });
+    };
+
+    filter = () => {
+        alert("filtrando");
+    };
+
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.filter} onPress={() => alert("filtrando")}>
+                <TouchableOpacity style={styles.filter} onPress={this.filter}>
                     <Text style={styles.filterText}>Filtros</Text>
                 </TouchableOpacity>
                 <View>
@@ -86,7 +130,18 @@ class ProductScreen extends Component {
                 </View>
                 <FlatList
                     data={this.state.products}
-                    renderItem={({ item }) => <Product product={item} />}
+                    renderItem={({ item }) => (
+                        <Product
+                            product={item}
+                            onRemove={this.removeProducts}
+                            onEdit={this.editProducts}
+                            swipe={
+                                this.props.navigation.state.params.idToSearch === undefined
+                                    ? true
+                                    : false
+                            }
+                        />
+                    )}
                     keyExtractor={item => `${item._id}`}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatList}
