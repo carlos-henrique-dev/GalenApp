@@ -9,24 +9,26 @@ import AuthPaths from "./src/screens/AuthScreens/AuthStackConfig";
 import UserPaths from "./src/screens/UserScreens/UserStackConfig";
 
 const SwitchPaths = createSwitchNavigator(
-    {
-        SplashScreen,
-        AuthPaths,
-        UserPaths
-    },
-    { initialRouteName: "SplashScreen" }
+  {
+    SplashScreen,
+    AuthPaths,
+    UserPaths
+  },
+  { initialRouteName: "SplashScreen" }
 );
 
 const Navigator = createAppContainer(SwitchPaths);
 
 const store = configureStore();
 
-export default class App extends Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <Navigator />
-            </Provider>
-        );
-    }
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Navigator />
+      </Provider>
+    );
+  }
 }
+
+export default App;

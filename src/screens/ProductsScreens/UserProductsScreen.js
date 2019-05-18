@@ -86,8 +86,9 @@ class ProductScreen extends Component {
                             if (result.status === 200) {
                                 Alert.alert("Sucesso", "Produdo excluído com sucesso");
                                 this.loadProducts();
+                            } else {
+                                Alert.alert("Erro", "Erro ao excluir o produto");
                             }
-                            Alert.alert("Erro", "Erro ao excluir o produto");
                         })
                         .catch(err => Alert.alert("Erro", `Erro ao excluir o produto: ${err}`));
                 }

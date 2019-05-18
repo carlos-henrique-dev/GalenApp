@@ -4,11 +4,11 @@ import thunk from "redux-thunk";
 import user from "./ducks/user";
 
 const rootReducer = combineReducers({
-    user
+  user
 });
 
 const configureStore = () => {
-    return createStore(rootReducer, applyMiddleware(thunk));
+  return createStore(rootReducer, applyMiddleware(thunk));
 };
 
 export default configureStore;

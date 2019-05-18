@@ -13,17 +13,7 @@ export default class AllnightScreen extends Component {
       headerTintColor: colors.nyanza,
       headerStyle: {
         backgroundColor: colors.fieryrose
-      } /* ,
-            headerLeft: (
-                <HeaderBackButton
-                    tintColor={colors.nyanza}
-                    onPress={() =>
-                        navigation.state.params.authorized
-                            ? navigation.goBack()
-                            : navigation.navigate("LoginScreen")
-                    }
-                />
-            ) */
+      } 
     };
   };
   constructor(props) {
@@ -77,7 +67,7 @@ export default class AllnightScreen extends Component {
             <PharmacyCard
               data={item}
               navigate={() =>
-                this.props.navigation.navigate("DrugstoreDetails", {
+                this.props.navigation.navigate("DrugstoreDetailsPublic", {
                   data: item
                 })
               }
