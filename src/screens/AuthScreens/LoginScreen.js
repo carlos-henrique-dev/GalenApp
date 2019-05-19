@@ -24,7 +24,7 @@ import OffilineNotice from '../../components/OfflineNotice';
 
 class LoginScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
     saveLoginData: PropTypes.func.isRequired,
   };
 
@@ -35,8 +35,8 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
+      email: 'henrique2@mail.com',
+      password: 'henrique',
       remember: false,
       forgotPassword: false,
       loading: false,
@@ -78,7 +78,7 @@ class LoginScreen extends Component {
               navigation.navigate('UserPaths');
             });
           } else {
-            this.saveLoginData(res.data.response);
+            saveLoginData(res.data.response);
             this.setLoading();
             navigation.navigate('UserPaths');
           }

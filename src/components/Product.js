@@ -71,16 +71,20 @@ const Product = (props) => {
 };
 
 Product.propTypes = {
-  product: PropStyles.objectOf.isRequired,
-  onRemove: PropStyles.func.isRequired,
-  onEdit: PropStyles.func.isRequired,
-  swipe: PropStyles.bool.isRequired,
-  publicList: PropStyles.bool.isRequired,
+  product: PropStyles.objectOf(Object).isRequired,
+  onRemove: PropStyles.func,
+  onEdit: PropStyles.func,
+  swipe: PropStyles.bool,
+  publicList: PropStyles.bool,
   openUserList: PropStyles.func,
 };
 
 Product.defaultProps = {
   openUserList: null,
+  onRemove: null,
+  onEdit: null,
+  swipe: null,
+  publicList: false,
 };
 
 export default Product;

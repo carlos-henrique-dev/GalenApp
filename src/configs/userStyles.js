@@ -3,7 +3,7 @@ import colors from './common_styles';
 
 const { width } = Dimensions.get('window');
 
-const UserSettingsScreenStyles = StyleSheet.create({
+export const UserSettingsScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -41,4 +41,4 @@ const UserSettingsScreenStyles = StyleSheet.create({
   },
 });
 
-export default { UserSettingsScreenStyles };
+export const lala = '';

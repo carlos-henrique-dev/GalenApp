@@ -8,7 +8,7 @@ import { UserSettingsScreenStyles } from '../../configs/userStyles';
 
 export default class UserSettingsScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {

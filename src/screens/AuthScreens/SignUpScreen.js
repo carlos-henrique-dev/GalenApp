@@ -13,8 +13,7 @@ import { SignUpScreenStyles } from '../../configs/authscreensStyles';
 
 export default class SignUpScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
-    loginType: PropTypes.string.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {
@@ -102,13 +101,13 @@ export default class SignUpScreen extends Component {
 
   render() {
     const destructuredState = this.state;
-    const { loginType, navigation } = this.props;
+    const { navigation } = this.props;
 
     return (
       <View behavior="padding" style={SignUpScreenStyles.container} enabled>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
         {destructuredState.loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
-        {loginType === 'custumer' ? (
+        {navigation.state.params.type === 'custumer' ? (
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={{

@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  StatusBar,
+  View, Text, Image, TouchableOpacity, StatusBar, ToastAndroid,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { createOpenLink } from 'react-native-open-maps';
 import call from 'react-native-phone-call';
 import colors from '../../configs/common_styles';
-
-const { width } = Dimensions.get('window');
+import { DrugstoreDetailsStyles } from '../../configs/drugstoreStyles';
 
 export default class componentName extends Component {
+  static propTypes = {
+    navigation: PropTypes.objectOf(Object).isRequired,
+  };
+
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.data.name,
     headerTintColor: colors.nyanza,
@@ -29,85 +27,79 @@ export default class componentName extends Component {
   });
 
   constructor(props) {
+    const { navigation } = props;
     super(props);
     this.state = {
-      data: props.navigation.state.params.data,
+      data: navigation.state.params.data,
     };
   }
 
   makeCall = (number) => {
-    call({ number, prompt: true }).catch(error => console.log(error));
+    call({ number, prompt: true }).catch(() => {
+      ToastAndroid.show('Erro ao realizar ligação', ToastAndroid.SHORT);
+    });
   };
 
   render() {
+    const {
+      data: { item: data },
+    } = this.state;
+
     const openDrugstoreOnMap = createOpenLink({
-      latitude: Number.parseFloat(this.state.data.address.gpsCoordinates.latitude),
-      longitude: Number.parseFloat(this.state.data.address.gpsCoordinates.longitude),
+      latitude: Number.parseFloat(data.address.gpsCoordinates.latitude),
+      longitude: Number.parseFloat(data.address.gpsCoordinates.longitude),
       provider: 'google',
-      end: `${this.state.data.address.gpsCoordinates.latitude}, ${
-        this.state.data.address.gpsCoordinates.longitude
-      }`,
+      end: `${data.address.gpsCoordinates.latitude}, ${data.address.gpsCoordinates.longitude}`,
     });
 
     return (
-      <View style={styles.container}>
+      <View style={DrugstoreDetailsStyles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
-        <View style={styles.imageContainer}>
-          {this.state.data.photo.photo_url ? (
-            <Image
-              resizeMode="stretch"
-              source={{ uri: this.state.data.photo.photo_url }}
-              style={styles.image}
-            />
+        <View style={DrugstoreDetailsStyles.imageContainer}>
+          {data.photo.photo_url ? (
+            <Image resizeMode="stretch" source={{ uri: data.photo.photo_url }} style={DrugstoreDetailsStyles.image} />
           ) : (
-            <Text style={styles.imageText}>Esta farmácia não possui nenhuma foto disponível</Text>
+            <Text style={DrugstoreDetailsStyles.imageText}>Esta farmácia não possui nenhuma foto disponível</Text>
           )}
         </View>
-        <View style={styles.detailContainer}>
-          <View style={styles.contactContainer}>
-            {this.state.data.type === 'temporary' ? (
+        <View style={DrugstoreDetailsStyles.detailContainer}>
+          <View style={DrugstoreDetailsStyles.contactContainer}>
+            {data.type === 'temporary' ? (
               <View>
-                <Text style={styles.contactTitle}>Contato: </Text>
-                <TouchableOpacity
-                  onPress={() => this.makeCall(
-                    `${this.state.data.contact.areacode}${this.state.data.contact.number}`,
-                  )
-                  }
-                >
-                  <Text style={styles.contact}>
-                    {`(${this.state.data.contact.areacode}) ${this.state.data.contact.number}`}
-                  </Text>
+                <Text style={DrugstoreDetailsStyles.contactTitle}>Contato: </Text>
+                <TouchableOpacity onPress={() => this.makeCall(`${data.contact.areacode}${data.contact.number}`)}>
+                  <Text style={DrugstoreDetailsStyles.contact}>{`(${data.contact.areacode}) ${data.contact.number}`}</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               <View>
-                <Text style={styles.contactTitle}>Contatos: </Text>
-                {this.state.data.contacts.map(contact => (
-                  <Text key={contact._id} style={styles.contact}>
+                <Text style={DrugstoreDetailsStyles.contactTitle}>Contatos: </Text>
+                {data.contacts.map(contact => (
+                  <Text key={contact._id} style={DrugstoreDetailsStyles.contact}>
                     {`(${contact.areacode}) ${contact.number}`}
                   </Text>
                 ))}
               </View>
             )}
           </View>
-          <View style={styles.addressContainer}>
-            <Text style={styles.addressTitle}>Endereço</Text>
+          <View style={DrugstoreDetailsStyles.addressContainer}>
+            <Text style={DrugstoreDetailsStyles.addressTitle}>Endereço</Text>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.addressSubTitle}>Rua:</Text>
-              <Text style={styles.addressContent}>{this.state.data.address.street}</Text>
+              <Text style={DrugstoreDetailsStyles.addressSubTitle}>Rua:</Text>
+              <Text style={DrugstoreDetailsStyles.addressContent}>{data.address.street}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.addressSubTitle}>Bairro:</Text>
-              <Text style={styles.addressContent}>{this.state.data.address.neighborhood}</Text>
+              <Text style={DrugstoreDetailsStyles.addressSubTitle}>Bairro:</Text>
+              <Text style={DrugstoreDetailsStyles.addressContent}>{data.address.neighborhood}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.addressSubTitle}>Número:</Text>
-              <Text style={styles.addressContent}>{this.state.data.address.number}</Text>
+              <Text style={DrugstoreDetailsStyles.addressSubTitle}>Número:</Text>
+              <Text style={DrugstoreDetailsStyles.addressContent}>{data.address.number}</Text>
             </View>
           </View>
         </View>
         <TouchableOpacity onPress={openDrugstoreOnMap}>
-          <Text style={styles.openMap}>Abrir no mapa</Text>
+          <Text style={DrugstoreDetailsStyles.openMap}>Abrir no mapa</Text>
         </TouchableOpacity>
         {/*
                 TODO: verificar se é uma farmácia temporária ou não
@@ -118,92 +110,3 @@ export default class componentName extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    marginLeft: 5,
-    marginRight: 5,
-  },
-  imageContainer: {
-    width,
-    height: 200,
-    justifyContent: 'center',
-  },
-  image: {
-    flex: 1,
-  },
-  imageText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#CED4DA',
-    textAlign: 'center',
-  },
-  detailContainer: {
-    marginTop: 15,
-    width: width - 10,
-    alignContent: 'flex-start',
-    marginLeft: 5,
-    borderLeftWidth: 1,
-    borderLeftColor: colors.mainPurple,
-    padding: 5,
-  },
-  contactContainer: {
-    padding: 10,
-  },
-  contactTitle: {
-    fontSize: 18,
-    color: colors.mainPurple,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: colors.queenblue,
-  },
-  contact: {
-    color: colors.black,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 10,
-    marginBottom: 8,
-  },
-  addressContainer: {
-    padding: 10,
-  },
-  addressTitle: {
-    fontSize: 18,
-    color: colors.queenblue,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  addressSubTitle: {
-    color: colors.black,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 10,
-    marginBottom: 5,
-  },
-  addressContent: {
-    color: colors.black,
-    fontSize: 16,
-    marginTop: 2,
-  },
-  productButton: {
-    marginTop: 20,
-    width: width - 20,
-    height: 50,
-    backgroundColor: colors.mainBlue,
-    justifyContent: 'center',
-  },
-  productText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.white,
-    textAlign: 'center',
-  },
-  openMap: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.pistachio,
-    margin: 10,
-  },
-});

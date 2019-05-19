@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar,
+  View, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import colors from '../../configs/common_styles';
@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
 });
 
 export default class AllnightScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.objectOf(Object).isRequired,
+  };
+
   static navigationOptions = {
     headerTitle: 'Farmácias de plantão',
     headerTintColor: colors.nyanza,
@@ -44,27 +48,35 @@ export default class AllnightScreen extends Component {
     this.state = {
       refreshing: false,
       drugstores: [],
+      loading: false,
     };
 
     this.loadDrugstores = this.loadDrugstores.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.setLoading = this.setLoading.bind(this);
   }
 
-  componentDidMount() {
-    this.loadDrugstores();
+  async componentDidMount() {
+    await this.loadDrugstores();
   }
 
-  loadDrugstores() {
+  setLoading() {
+    this.setState(prevState => ({ loading: !prevState.loading }));
+  }
+
+  async loadDrugstores() {
+    this.setLoading();
     api
       .get('allnight_drugstore')
-      .then((drugstoresList) => {
-        this.setState({
+      .then(async (drugstoresList) => {
+        this.setLoading();
+        await this.setState({
           drugstores: drugstoresList.data.list_of_drugstores,
           refreshing: false,
         });
       })
-      .catch((/* error */) => {
-        /* console.log('erro', error); */
+      .catch(() => {
+        this.setLoading();
         this.setState({ refreshing: false });
       });
   }
@@ -81,30 +93,36 @@ export default class AllnightScreen extends Component {
     );
   }
 
-  render() {
-    const { drugstores, refreshing } = this.state;
+  renderItem = (drugstore) => {
     const { navigation } = this.props;
+    return (
+      <PharmacyCard
+        data={drugstore}
+        navigate={() => navigation.navigate('DrugstoreDetailsPublic', {
+          data: drugstore,
+        })
+        }
+      />
+    );
+  };
+
+  render() {
+    const { drugstores, refreshing, loading } = this.state;
+    const { navigation } = this.props;
+
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
+        {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
         <FlatList
           data={drugstores}
-          renderItem={({ drugstore }) => (
-            <PharmacyCard
-              data={drugstore}
-              navigate={() => navigation.navigate('DrugstoreDetailsPublic', {
-                data: drugstore,
-              })
-              }
-            />
-          )}
+          renderItem={this.renderItem}
           keyExtractor={drugstore => drugstore._id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.flatList}
           refreshing={refreshing}
           onRefresh={this.handleRefresh}
         />
-
         {navigation.state.params.authorized ? (
           <TouchableOpacity
             style={styles.addButtonContainer}
@@ -120,7 +138,3 @@ export default class AllnightScreen extends Component {
     );
   }
 }
-
-AllnightScreen.propTypes = {
-  navigation: PropTypes.node.isRequired,
-};

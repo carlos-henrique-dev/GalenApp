@@ -52,7 +52,7 @@ Footer.propTypes = {
   navigate: PropTypes.func.isRequired,
   title1: PropTypes.string.isRequired,
   title2: PropTypes.string.isRequired,
-  signup: PropTypes.string.isRequired,
+  signup: PropTypes.func.isRequired,
 };
 
 export default Footer;

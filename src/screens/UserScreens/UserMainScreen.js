@@ -55,18 +55,9 @@ class UserMainScreen extends Component {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
-        <Buttons
-          title="Buscar farmácias de plantão"
-          navigateFunc={() => this.onNavigate('AllnightScreen')}
-        />
-        <Buttons
-          title="Buscar farmácias abertas na região"
-          navigateFunc={() => this.onNavigate('openDrugstores')}
-        />
-        <Buttons
-          title="Pesquisar produtos"
-          navigateFunc={() => this.onNavigate('ProductsScreen')}
-        />
+        <Buttons title="Buscar farmácias de plantão" navigateFunc={() => this.onNavigate('AllnightScreen')} />
+        <Buttons title="Buscar farmácias abertas na região" navigateFunc={() => this.onNavigate('openDrugstores')} />
+        <Buttons title="Pesquisar produtos" navigateFunc={() => this.onNavigate('ProductsScreen')} />
         <Buttons title="Meus produtos" navigateFunc={() => this.onNavigate('UserProductsScreen')} />
       </View>
     );
@@ -80,5 +71,5 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps)(UserMainScreen);
 
 UserMainScreen.propTypes = {
-  navigation: PropTypes.node.isRequired,
+  navigation: PropTypes.objectOf(Object).isRequired,
 };

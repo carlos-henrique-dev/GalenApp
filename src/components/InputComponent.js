@@ -43,13 +43,7 @@ const InputComponent = (props) => {
   return (
     <View style={[styles.textInputArea, special ? styles.specialInputArea : null]}>
       <Icon name={icon} size={20} style={styles.icon} />
-      <TextInput
-        {...props}
-        returnKeyType={returnKeyType}
-        style={[styles.input, style]}
-        autoCapitalize="none"
-        numberOfLines={2}
-      />
+      <TextInput {...props} returnKeyType={returnKeyType} style={[styles.input, style]} autoCapitalize="none" numberOfLines={2} />
     </View>
   );
 };
@@ -58,7 +52,7 @@ InputComponent.propTypes = {
   special: PropTypes.bool,
   icon: PropTypes.string.isRequired,
   returnKeyType: PropTypes.string,
-  style: PropTypes.objectOf(StyleSheet),
+  style: PropTypes.objectOf(Object),
 };
 
 InputComponent.defaultProps = {

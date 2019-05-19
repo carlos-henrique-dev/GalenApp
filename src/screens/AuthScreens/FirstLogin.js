@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import ProptTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../../configs/common_styles';
 
@@ -48,11 +48,7 @@ const styles = StyleSheet.create({
 
 export default class FirstLogin extends Component {
   static propTypes = {
-    navigation: ProptTypes.objectOf,
-  };
-
-  static defaultProps = {
-    navigation: null,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {

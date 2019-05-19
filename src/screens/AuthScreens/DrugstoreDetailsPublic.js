@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, TouchableOpacity, StatusBar,
+  View, Text, Image, TouchableOpacity, StatusBar, ToastAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { createOpenLink } from 'react-native-open-maps';
 import call from 'react-native-phone-call';
 import colors from '../../configs/common_styles';
-import DrugstoreDetailsPublicStyles from '../../configs/authscreensStyles';
+import { DrugstoreDetailsPublicStyles } from '../../configs/authscreensStyles';
 
 export default class DrugstoreDetailsPublic extends Component {
+  static propTypes = {
+    navigation: PropTypes.objectOf(Object).isRequired,
+  };
+
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.data.name,
     headerTintColor: colors.nyanza,
@@ -31,13 +35,15 @@ export default class DrugstoreDetailsPublic extends Component {
   }
 
   makeCall = (number) => {
-    call({ number, prompt: true }).catch((/* error */) => {
-      /* console.log(error) */
+    call({ number, prompt: true }).catch(() => {
+      ToastAndroid.show('Erro ao realizar ligação', ToastAndroid.SHORT);
     });
   };
 
   render() {
-    const { data } = this.state;
+    const {
+      data: { item: data },
+    } = this.state;
     const openDrugstoreOnMap = createOpenLink({
       latitude: Number.parseFloat(data.address.gpsCoordinates.latitude),
       longitude: Number.parseFloat(data.address.gpsCoordinates.longitude),
@@ -50,15 +56,9 @@ export default class DrugstoreDetailsPublic extends Component {
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
         <View style={DrugstoreDetailsPublicStyles.imageContainer}>
           {data.photo.photo_url ? (
-            <Image
-              resizeMode="stretch"
-              source={{ uri: data.photo.photo_url }}
-              style={DrugstoreDetailsPublicStyles.image}
-            />
+            <Image resizeMode="stretch" source={{ uri: data.photo.photo_url }} style={DrugstoreDetailsPublicStyles.image} />
           ) : (
-            <Text style={DrugstoreDetailsPublicStyles.imageText}>
-              Esta farmácia não possui nenhuma foto disponível
-            </Text>
+            <Text style={DrugstoreDetailsPublicStyles.imageText}>Esta farmácia não possui nenhuma foto disponível</Text>
           )}
         </View>
         <View style={DrugstoreDetailsPublicStyles.detailContainer}>
@@ -66,12 +66,8 @@ export default class DrugstoreDetailsPublic extends Component {
             {data.type === 'temporary' ? (
               <View>
                 <Text style={DrugstoreDetailsPublicStyles.contactTitle}>Contato: </Text>
-                <TouchableOpacity
-                  onPress={() => this.makeCall(`${data.contact.areacode}${data.contact.number}`)}
-                >
-                  <Text style={DrugstoreDetailsPublicStyles.contact}>
-                    {`(${data.contact.areacode}) ${data.contact.number}`}
-                  </Text>
+                <TouchableOpacity onPress={() => this.makeCall(`${data.contact.areacode}${data.contact.number}`)}>
+                  <Text style={DrugstoreDetailsPublicStyles.contact}>{`(${data.contact.areacode}) ${data.contact.number}`}</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -93,9 +89,7 @@ export default class DrugstoreDetailsPublic extends Component {
             </View>
             <View style={{ flexDirection: 'row' }}>
               <Text style={DrugstoreDetailsPublicStyles.addressSubTitle}>Bairro:</Text>
-              <Text style={DrugstoreDetailsPublicStyles.addressContent}>
-                {data.address.neighborhood}
-              </Text>
+              <Text style={DrugstoreDetailsPublicStyles.addressContent}>{data.address.neighborhood}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
               <Text style={DrugstoreDetailsPublicStyles.addressSubTitle}>Número:</Text>
@@ -115,7 +109,3 @@ export default class DrugstoreDetailsPublic extends Component {
     );
   }
 }
-
-DrugstoreDetailsPublic.propTypes = {
-  navigation: PropTypes.node.isRequired,
-};

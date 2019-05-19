@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, StatusBar, ActivityIndicator, AsyncStorage, ToastAndroid,
 } from 'react-native';
-import PropTypes from 'process';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import api from '../../configs/api';
 import { userLogin } from '../../store/ducks/user';
@@ -23,8 +23,13 @@ const styles = StyleSheet.create({
 
 class SplashScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
-    saveLoginData: PropTypes.func.isRequired,
+    navigation: PropTypes.objectOf(Object),
+    saveLoginData: PropTypes.func,
+  };
+
+  static defaultProps = {
+    navigation: null,
+    saveLoginData: null,
   };
 
   static navigationOptions = {

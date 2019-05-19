@@ -16,9 +16,9 @@ const styles = StyleSheet.create({
   },
 });
 
-class AddProductScreen extends Component {
+class EditProductScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {
@@ -93,4 +93,4 @@ const mapStateToProps = state => ({
   userName: state.user.name,
 });
 
-export default connect(mapStateToProps)(AddProductScreen);
+export default connect(mapStateToProps)(EditProductScreen);

@@ -26,7 +26,7 @@ class AddAllNightScreen extends Component {
   static propTypes = {
     userName: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {

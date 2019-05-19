@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, Alert,
+  View, Text, FlatList, TouchableOpacity, Alert, ToastAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import api from '../../configs/api';
 import colors from '../../configs/common_styles';
 import Product from '../../components/Product';
-import UserProductsScreenStyles from '../../configs/productsStyles';
+import { UserProductsScreenStyles } from '../../configs/productsStyles';
 
 class ProductScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
     userId: PropTypes.string.isRequired,
   };
 
@@ -65,10 +65,10 @@ class ProductScreen extends Component {
             .delete(`products/${productId}`)
             .then((result) => {
               if (result.status === 200) {
-                Alert.alert('Sucesso', 'Produdo excluído com sucesso');
+                ToastAndroid.show('Produdo excluído com sucesso', ToastAndroid.SHORT);
                 this.loadProducts();
               } else {
-                Alert.alert('Erro', 'Erro ao excluir o produto');
+                ToastAndroid.show('Erro ao excluir o produto', ToastAndroid.SHORT);
               }
             })
             .catch(err => Alert.alert('Erro', `Erro ao excluir o produto: ${err}`));

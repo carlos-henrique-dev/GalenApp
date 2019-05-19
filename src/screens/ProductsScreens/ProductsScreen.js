@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 
 export default class ProductScreen extends Component {
   static propTypes = {
-    navigation: PropTypes.objectOf.isRequired,
+    navigation: PropTypes.objectOf(Object).isRequired,
   };
 
   static navigationOptions = {
