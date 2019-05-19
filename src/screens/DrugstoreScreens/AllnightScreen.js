@@ -1,19 +1,20 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar } from "react-native";
-import { colors } from "../../configs/common_styles";
-import api from "../../configs/api";
-import plusIcon from "../../assets/icon_plus.png";
-import PharmacyCard from "../../components/PharmacyCard";
-import { HeaderBackButton } from "react-navigation";
+import React, { Component } from 'react';
+import {
+  View, Text, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar,
+} from 'react-native';
+import { HeaderBackButton } from 'react-navigation';
+import colors from '../../configs/common_styles';
+import api from '../../configs/api';
+import plusIcon from '../../assets/icon_plus.png';
+import PharmacyCard from '../../components/PharmacyCard';
 
 export default class AllnightScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: "Farmácias de plantão",
-      headerTintColor: colors.nyanza,
-      headerStyle: {
-        backgroundColor: colors.fieryrose
-      } /* ,
+  static navigationOptions = ({ navigation }) => ({
+    headerTitle: 'Farmácias de plantão',
+    headerTintColor: colors.nyanza,
+    headerStyle: {
+      backgroundColor: colors.fieryrose,
+    } /* ,
             headerLeft: (
                 <HeaderBackButton
                     tintColor={colors.nyanza}
@@ -23,14 +24,14 @@ export default class AllnightScreen extends Component {
                             : navigation.navigate("LoginScreen")
                     }
                 />
-            ) */
-    };
-  };
+            ) */,
+  });
+
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      drugstores: []
+      drugstores: [],
     };
 
     this.loadDrugstores = this.loadDrugstores.bind(this);
@@ -43,15 +44,15 @@ export default class AllnightScreen extends Component {
 
   loadDrugstores() {
     api
-      .get("allnight_drugstore")
-      .then(drugstores_list => {
+      .get('allnight_drugstore')
+      .then((drugstores_list) => {
         this.setState({
           drugstores: drugstores_list.data.list_of_drugstores,
-          refreshing: false
+          refreshing: false,
         });
       })
-      .catch(error => {
-        console.log("erro", error);
+      .catch((error) => {
+        console.log('erro', error);
         this.setState({ refreshing: false });
       });
   }
@@ -59,11 +60,11 @@ export default class AllnightScreen extends Component {
   handleRefresh() {
     this.setState(
       {
-        refreshing: !this.state.refreshing
+        refreshing: !this.state.refreshing,
       },
       () => {
         this.loadDrugstores();
-      }
+      },
     );
   }
 
@@ -76,10 +77,9 @@ export default class AllnightScreen extends Component {
           renderItem={({ item }) => (
             <PharmacyCard
               data={item}
-              navigate={() =>
-                this.props.navigation.navigate("DrugstoreDetails", {
-                  data: item
-                })
+              navigate={() => this.props.navigation.navigate('DrugstoreDetails', {
+                data: item,
+              })
               }
             />
           )}
@@ -93,10 +93,9 @@ export default class AllnightScreen extends Component {
         {this.props.navigation.state.params.authorized ? (
           <TouchableOpacity
             style={styles.addButtonContainer}
-            onPress={() =>
-              this.props.navigation.navigate("AddAllNightScreen", {
-                loadDrugstores: this.loadDrugstores
-              })
+            onPress={() => this.props.navigation.navigate('AddAllNightScreen', {
+              loadDrugstores: this.loadDrugstores,
+            })
             }
           >
             <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
@@ -110,21 +109,21 @@ export default class AllnightScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    marginTop: 5
+    alignItems: 'center',
+    marginTop: 5,
   },
   addButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 5,
     right: 10,
     width: 60,
-    height: 60
+    height: 60,
   },
   addButton: {
     width: 60,
-    height: 60
+    height: 60,
   },
   flatList: {
-    paddingBottom: 60
-  }
+    paddingBottom: 60,
+  },
 });

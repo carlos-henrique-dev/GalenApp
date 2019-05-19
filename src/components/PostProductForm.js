@@ -1,31 +1,28 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Dimensions,
-  Switch,
-  Image,
-  Alert
-} from "react-native";
-import { colors } from "../configs/common_styles";
+  View, Text, TouchableOpacity, TextInput, Switch, Image, ToastAndroid,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import ImagePicker from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer/index.android';
 
-import ImagePicker from "react-native-image-picker";
-import ImageResizer from "react-native-image-resizer";
-
-const { width } = Dimensions.get("window");
+import { PostProductFormStyles } from '../configs/componentsStyles';
+import colors from '../configs/common_styles';
 
 export default class PostProductForm extends Component {
+  static propTypes = {
+    onPost: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       file: null,
-      name: "",
-      price: "",
-      whereToBuy: "",
-      onSale: false
+      name: '',
+      price: '',
+      whereToBuy: '',
+      onSale: false,
     };
     this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
     this.handleGetPhoto = this.handleGetPhoto.bind(this);
@@ -35,204 +32,116 @@ export default class PostProductForm extends Component {
   handleGetPhoto() {
     const options = {
       noData: true,
-      title: "Foto do produto",
-      chooseFromLibraryButtonTitle: "Buscar na galeria",
-      takePhotoButtonTitle: "Tirar uma foto"
+      title: 'Foto do produto',
+      chooseFromLibraryButtonTitle: 'Buscar na galeria',
+      takePhotoButtonTitle: 'Tirar uma foto',
     };
-    ImagePicker.showImagePicker(options, async response => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.error) {
-        console.log("erro: ", response.error);
+        ToastAndroid.show('Erro', ToastAndroid.SHORT);
       } else if (response.didCancel) {
-        console.log("cancelou");
+        ToastAndroid.show('Ação cancelada', ToastAndroid.SHORT);
+      } else if (response.fileSize > 3 * 1024 * 1024) {
+        ImageResizer.createResizedImage(response.uri, 800, 600, 'JPEG', 80, 90)
+          .then((compressResponse) => {
+            this.setState({ file: compressResponse });
+          })
+          .catch(() => {
+            ToastAndroid.show('Erro na compressão do arquivo', ToastAndroid.SHORT);
+          });
       } else {
-        if (response.fileSize > 3 * 1024 * 1024) {
-          //ImageResizer.createResizedImage(response.uri, 800, 600, "JPEG", 80)
-          ImageResizer.createResizedImage(response.uri, 800, 600, "JPEG", 80, 90)
-            .then(compressResponse => {
-              console.log("comprimido", compressResponse);
-              this.setState({ file: compressResponse });
-            })
-            .catch(err => {
-              Alert.alert("Erro", "Erro na compressão do arquivo");
-            });
-        } else {
-          this.setState({ file: response });
-        }
+        this.setState({ file: response });
       }
     });
   }
 
   sendProductData() {
-    if (
-      this.state.file !== null &&
-      this.state.name.trim() !== "" &&
-      this.state.price.trim() !== "" &&
-      this.state.whereToBuy.trim() !== ""
-    ) {
-      this.props.onPost(
-        this.state.file,
-        this.state.name,
-        this.state.price,
-        this.state.whereToBuy,
-        this.state.onSale
-      );
+    const {
+      file, name, price, whereToBuy, onSale,
+    } = this.state;
+    const { onPost } = this.props;
+
+    if (file !== null && name.trim() !== '' && price.trim() !== '' && whereToBuy.trim() !== '') {
+      onPost(file, name, price, whereToBuy, onSale);
     } else {
-      alert("preencha os campos corretamente");
+      ToastAndroid.show('preencha os campos corretamente', ToastAndroid.SHORT);
     }
   }
 
   handleToggleSwitch() {
-    this.setState({ onSale: !this.state.onSale });
+    const { onSale } = this.state;
+    this.setState({ onSale: !onSale });
   }
 
   render() {
+    const {
+      name, price, whereToBuy, onSale, file,
+    } = this.state;
+    const { onCancel } = this.props;
+
     return (
-      <View style={styles.container}>
-        <View style={styles.textArea}>
-          {this.state.name !== "" ? <Text style={styles.text}> Nome do produto </Text> : null}
+      <View style={PostProductFormStyles.container}>
+        <View style={PostProductFormStyles.textArea}>
+          {name !== '' ? <Text style={PostProductFormStyles.text}> Nome do produto </Text> : null}
           <TextInput
             placeholder="Nome do produto"
-            style={styles.textInput}
-            value={this.state.name}
+            style={PostProductFormStyles.textInput}
+            value={name}
             placeholderTextColor={colors.queenblue}
-            onChangeText={name => this.setState({ name: name })}
+            onChangeText={newName => this.setState({ name: newName })}
           />
         </View>
-        <View style={styles.textArea}>
-          {this.state.price !== "" ? <Text style={styles.text}> Preço do produto </Text> : null}
+        <View style={PostProductFormStyles.textArea}>
+          {price !== '' ? <Text style={PostProductFormStyles.text}> Preço do produto </Text> : null}
           <TextInput
             placeholder="Preço do produto"
-            style={styles.textInput}
-            value={this.state.price}
+            style={PostProductFormStyles.textInput}
+            value={price}
             keyboardType="number-pad"
             placeholderTextColor={colors.queenblue}
-            onChangeText={price => this.setState({ price: price })}
+            onChangeText={newPrice => this.setState({ price: newPrice })}
           />
         </View>
-        <View style={styles.textArea}>
-          {this.state.whereToBuy !== "" ? <Text style={styles.text}> Onde comprou </Text> : null}
+        <View style={PostProductFormStyles.textArea}>
+          {whereToBuy !== '' ? <Text style={PostProductFormStyles.text}> Onde comprou </Text> : null}
           <TextInput
             placeholder="Onde comprou"
-            style={styles.textInput}
-            value={this.state.whereToBuy}
+            style={PostProductFormStyles.textInput}
+            value={whereToBuy}
             placeholderTextColor={colors.queenblue}
-            onChangeText={whereToBuy => this.setState({ whereToBuy: whereToBuy })}
+            onChangeText={newWhereToBuy => this.setState({ whereToBuy: newWhereToBuy })}
           />
         </View>
-        <View style={styles.switchArea}>
-          <Text style={styles.switchText}> Estava em promoção? </Text>
-          <Text style={styles.switchText}>{this.state.onSale ? "Sim" : "Não"}</Text>
+        <View style={PostProductFormStyles.switchArea}>
+          <Text style={PostProductFormStyles.switchText}> Estava em promoção? </Text>
+          <Text style={PostProductFormStyles.switchText}>{onSale ? 'Sim' : 'Não'}</Text>
 
-          <Switch
-            onValueChange={this.handleToggleSwitch}
-            trackColor={{ false: colors.fieryrose, true: colors.pistachio }}
-            value={this.state.onSale}
-          />
+          <Switch onValueChange={this.handleToggleSwitch} trackColor={{ false: colors.fieryrose, true: colors.pistachio }} value={onSale} />
         </View>
 
-        <View style={styles.imageArea}>
-          {this.state.file ? (
-            <Image source={{ uri: this.state.file.uri }} style={styles.image} />
-          ) : (
-            <View style={styles.image} />
-          )}
+        <View style={PostProductFormStyles.imageArea}>
+          {file ? <Image source={{ uri: file.uri }} style={PostProductFormStyles.image} /> : <View style={PostProductFormStyles.image} />}
           <View>
-            <TouchableOpacity onPress={this.handleGetPhoto} style={styles.imageButton}>
-              <Text style={styles.imageText}>Insira uma foto</Text>
+            <TouchableOpacity onPress={this.handleGetPhoto} style={PostProductFormStyles.imageButton}>
+              <Text style={PostProductFormStyles.imageText}>Insira uma foto</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.footButtons}>
+        <View style={PostProductFormStyles.footButtons}>
           <TouchableOpacity
             onPress={() => {
-              this.props.onCancel();
+              onCancel();
             }}
-            style={styles.postButton}
+            style={PostProductFormStyles.postButton}
           >
-            <Text style={styles.imageText}>Cancelar</Text>
+            <Text style={PostProductFormStyles.imageText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.sendProductData} style={styles.postButton}>
-            <Text style={styles.imageText}>Postar</Text>
+          <TouchableOpacity onPress={this.sendProductData} style={PostProductFormStyles.postButton}>
+            <Text style={PostProductFormStyles.imageText}>Postar</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-around",
-    alignItems: "center"
-  },
-  textArea: {
-    alignItems: "flex-start"
-  },
-  textInput: {
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.fieryrose,
-    width: width - 30,
-    height: 45,
-    margin: 12
-  },
-  text: {
-    position: "absolute",
-    top: 10,
-    left: 15,
-    fontSize: 12,
-    color: colors.queenblue
-  },
-  switchArea: {
-    flexDirection: "row",
-    height: 25,
-    alignItems: "center"
-  },
-  switchText: {
-    color: colors.queenblue,
-    marginLeft: 8,
-    marginRight: 10,
-    fontSize: 16
-  },
-  imageArea: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    width: width - 30,
-    marginTop: 20
-  },
-  image: {
-    borderWidth: 1,
-    borderColor: colors.fieryrose,
-    width: 100,
-    height: 100
-  },
-  imageButton: {
-    backgroundColor: colors.fieryrose,
-    borderRadius: 10,
-    height: 40,
-    width: (width * 40) / 100,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  imageText: {
-    textAlign: "center",
-    fontSize: 16
-  },
-  footButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  postButton: {
-    marginTop: 35,
-    margin: 10,
-    backgroundColor: colors.pistachio,
-    borderRadius: 10,
-    height: 40,
-    width: (width * 40) / 100,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});

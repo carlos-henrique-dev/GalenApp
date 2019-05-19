@@ -1,1 +1,3 @@
-export const mapskey = "AIzaSyDQDSNhHb1UKLNelgNaORmkjJNlm7e_nUw";
+const mapskey = 'AIzaSyDQDSNhHb1UKLNelgNaORmkjJNlm7e_nUw';
+
+export default mapskey;

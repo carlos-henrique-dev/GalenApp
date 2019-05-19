@@ -1,31 +1,27 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Dimensions,
-  Switch,
-  Image,
-  Alert
-} from "react-native";
-import { colors } from "../configs/common_styles";
-
-import ImagePicker from "react-native-image-picker";
-import ImageResizer from "react-native-image-resizer";
-
-const { width } = Dimensions.get("window");
+  View, Text, TouchableOpacity, TextInput, Switch, Alert,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import { PostProductFormStyles } from '../configs/componentsStyles';
+import colors from '../configs/common_styles';
 
 export default class PostProductForm extends Component {
+  static propTypes = {
+    product: PropTypes.objectOf.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
+    const { product } = props;
     super(props);
     this.state = {
       /* file: null, */
-      name: this.props.product.name,
-      price: `${this.props.product.price}`,
-      whereToBuy: this.props.product.whereToBuy,
-      onSale: this.props.product.onSale
+      name: product.name,
+      price: `${product.price}`,
+      whereToBuy: product.whereToBuy,
+      onSale: product.onSale,
     };
     this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
     /*       this.handleGetPhoto = this.handleGetPhoto.bind(this); */
@@ -35,7 +31,7 @@ export default class PostProductForm extends Component {
   /*     componentDidMount() {
         const { photo_url: uri, photo_id, key } = this.props.product.photo;
         this.setState({ file: { uri, photo_id, key } });
-    } 
+    }
     handleGetPhoto() {
         const options = {
             noData: true,
@@ -63,74 +59,87 @@ export default class PostProductForm extends Component {
                 }
             }
         });
-    } 
+    }
     */
 
   sendProductData() {
+    const {
+      name, price, whereToBuy, onSale,
+    } = this.state;
+    const { onEdit } = this.props;
     if (
       /* this.state.file !== null && */
-      this.state.name.trim() !== "" &&
-      this.state.price.trim() !== "" &&
-      this.state.whereToBuy.trim() !== ""
+      name.trim() !== ''
+      && price.trim() !== ''
+      && whereToBuy.trim() !== ''
     ) {
-      this.props.onEdit(
+      onEdit(
         /* this.state.file, */
-        this.state.name,
-        this.state.price,
-        this.state.whereToBuy,
-        this.state.onSale
+        name,
+        price,
+        whereToBuy,
+        onSale,
       );
     } else {
-      alert("preencha os campos corretamente");
+      Alert.alert('Erro', 'preencha os campos corretamente');
     }
   }
 
   handleToggleSwitch() {
-    this.setState({ onSale: !this.state.onSale });
+    const { onSale } = this.state;
+    this.setState({ onSale: !onSale });
   }
 
   render() {
+    const {
+      name, price, whereToBuy, onSale,
+    } = this.state;
+    const { onCancel } = this.props;
     return (
-      <View style={styles.container}>
-        <View style={styles.textArea}>
-          {this.state.name !== "" ? <Text style={styles.text}> Nome do produto * </Text> : null}
+      <View style={PostProductFormStyles.container}>
+        <View style={PostProductFormStyles.textArea}>
+          {name !== '' ? <Text style={PostProductFormStyles.text}> Nome do produto * </Text> : null}
           <TextInput
             placeholder="Nome do produto *"
-            style={styles.textInput}
-            value={this.state.name}
+            style={PostProductFormStyles.textInput}
+            value={name}
             placeholderTextColor={colors.queenblue}
-            onChangeText={name => this.setState({ name: name })}
+            onChangeText={newName => this.setState({ name: newName })}
           />
         </View>
-        <View style={styles.textArea}>
-          {this.state.price !== "" ? <Text style={styles.text}> Preço do produto * </Text> : null}
+        <View style={PostProductFormStyles.textArea}>
+          {price !== '' ? (
+            <Text style={PostProductFormStyles.text}> Preço do produto * </Text>
+          ) : null}
           <TextInput
             placeholder="Preço do produto *"
-            style={styles.textInput}
-            value={this.state.price}
+            style={PostProductFormStyles.textInput}
+            value={price}
             keyboardType="number-pad"
             placeholderTextColor={colors.queenblue}
-            onChangeText={price => this.setState({ price: price })}
+            onChangeText={newPrice => this.setState({ price: newPrice })}
           />
         </View>
-        <View style={styles.textArea}>
-          {this.state.whereToBuy !== "" ? <Text style={styles.text}> Onde comprou * </Text> : null}
+        <View style={PostProductFormStyles.textArea}>
+          {whereToBuy !== '' ? (
+            <Text style={PostProductFormStyles.text}> Onde comprou * </Text>
+          ) : null}
           <TextInput
             placeholder="Onde comprou *"
-            style={styles.textInput}
-            value={this.state.whereToBuy}
+            style={PostProductFormStyles.textInput}
+            value={whereToBuy}
             placeholderTextColor={colors.queenblue}
-            onChangeText={whereToBuy => this.setState({ whereToBuy: whereToBuy })}
+            onChangeText={newWhereToBuy => this.setState({ whereToBuy: newWhereToBuy })}
           />
         </View>
-        <View style={styles.switchArea}>
-          <Text style={styles.switchText}> Estava em promoção? </Text>
-          <Text style={styles.switchText}>{this.state.onSale ? "Sim" : "Não"}</Text>
+        <View style={PostProductFormStyles.switchArea}>
+          <Text style={PostProductFormStyles.switchText}> Estava em promoção? </Text>
+          <Text style={PostProductFormStyles.switchText}>{onSale ? 'Sim' : 'Não'}</Text>
 
           <Switch
             onValueChange={this.handleToggleSwitch}
             trackColor={{ false: colors.fieryrose, true: colors.pistachio }}
-            value={this.state.onSale}
+            value={onSale}
           />
         </View>
 
@@ -147,96 +156,20 @@ export default class PostProductForm extends Component {
                     </View>
                 </View> */}
 
-        <View style={styles.footButtons}>
+        <View style={PostProductFormStyles.footButtons}>
           <TouchableOpacity
             onPress={() => {
-              this.props.onCancel();
+              onCancel();
             }}
-            style={styles.postButton}
+            style={PostProductFormStyles.postButton}
           >
-            <Text style={styles.imageText}>Cancelar</Text>
+            <Text style={PostProductFormStyles.imageText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.sendProductData} style={styles.postButton}>
-            <Text style={styles.imageText}>Editar</Text>
+          <TouchableOpacity onPress={this.sendProductData} style={PostProductFormStyles.postButton}>
+            <Text style={PostProductFormStyles.imageText}>Editar</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-around",
-    alignItems: "center"
-  },
-  textArea: {
-    alignItems: "flex-start"
-  },
-  textInput: {
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.fieryrose,
-    width: width - 30,
-    height: 45,
-    margin: 12
-  },
-  text: {
-    position: "absolute",
-    top: 10,
-    left: 15,
-    fontSize: 12,
-    color: colors.queenblue
-  },
-  switchArea: {
-    flexDirection: "row",
-    height: 25,
-    alignItems: "center"
-  },
-  switchText: {
-    color: colors.queenblue,
-    marginLeft: 8,
-    marginRight: 10,
-    fontSize: 16
-  },
-  imageArea: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    width: width - 30,
-    marginTop: 20
-  },
-  image: {
-    borderWidth: 1,
-    borderColor: colors.fieryrose,
-    width: 100,
-    height: 100
-  },
-  imageButton: {
-    backgroundColor: colors.fieryrose,
-    borderRadius: 10,
-    height: 40,
-    width: (width * 40) / 100,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  imageText: {
-    textAlign: "center",
-    fontSize: 16
-  },
-  footButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  postButton: {
-    marginTop: 35,
-    margin: 10,
-    backgroundColor: colors.pistachio,
-    borderRadius: 10,
-    height: 40,
-    width: (width * 40) / 100,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});

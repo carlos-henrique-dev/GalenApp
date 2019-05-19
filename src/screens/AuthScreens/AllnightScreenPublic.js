@@ -1,26 +1,49 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar } from "react-native";
-import { colors } from "../../configs/common_styles";
-import api from "../../configs/api";
-import plusIcon from "../../assets/icon_plus.png";
-import PharmacyCard from "../../components/PharmacyCard";
-import { HeaderBackButton } from "react-navigation";
+import React, { Component } from 'react';
+import {
+  View, StyleSheet, FlatList, TouchableOpacity, Image, StatusBar,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import colors from '../../configs/common_styles';
+import api from '../../configs/api';
+import plusIcon from '../../assets/icon_plus.png';
+import PharmacyCard from '../../components/PharmacyCard';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  addButtonContainer: {
+    position: 'absolute',
+    bottom: 5,
+    right: 10,
+    width: 60,
+    height: 60,
+  },
+  addButton: {
+    width: 60,
+    height: 60,
+  },
+  flatList: {
+    paddingBottom: 60,
+  },
+});
 
 export default class AllnightScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: "Farmácias de plantão",
-      headerTintColor: colors.nyanza,
-      headerStyle: {
-        backgroundColor: colors.fieryrose
-      } 
-    };
+  static navigationOptions = {
+    headerTitle: 'Farmácias de plantão',
+    headerTintColor: colors.nyanza,
+    headerStyle: {
+      backgroundColor: colors.fieryrose,
+    },
   };
+
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      drugstores: []
+      drugstores: [],
     };
 
     this.loadDrugstores = this.loadDrugstores.bind(this);
@@ -33,60 +56,61 @@ export default class AllnightScreen extends Component {
 
   loadDrugstores() {
     api
-      .get("allnight_drugstore")
-      .then(drugstores_list => {
+      .get('allnight_drugstore')
+      .then((drugstoresList) => {
         this.setState({
-          drugstores: drugstores_list.data.list_of_drugstores,
-          refreshing: false
+          drugstores: drugstoresList.data.list_of_drugstores,
+          refreshing: false,
         });
       })
-      .catch(error => {
-        console.log("erro", error);
+      .catch((/* error */) => {
+        /* console.log('erro', error); */
         this.setState({ refreshing: false });
       });
   }
 
   handleRefresh() {
+    const { refreshing } = this.state;
     this.setState(
       {
-        refreshing: !this.state.refreshing
+        refreshing: !refreshing,
       },
       () => {
         this.loadDrugstores();
-      }
+      },
     );
   }
 
   render() {
+    const { drugstores, refreshing } = this.state;
+    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
         <FlatList
-          data={this.state.drugstores}
-          renderItem={({ item }) => (
+          data={drugstores}
+          renderItem={({ drugstore }) => (
             <PharmacyCard
-              data={item}
-              navigate={() =>
-                this.props.navigation.navigate("DrugstoreDetailsPublic", {
-                  data: item
-                })
+              data={drugstore}
+              navigate={() => navigation.navigate('DrugstoreDetailsPublic', {
+                data: drugstore,
+              })
               }
             />
           )}
-          keyExtractor={item => item._id}
+          keyExtractor={drugstore => drugstore._id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.flatList}
-          refreshing={this.state.refreshing}
+          refreshing={refreshing}
           onRefresh={this.handleRefresh}
         />
 
-        {this.props.navigation.state.params.authorized ? (
+        {navigation.state.params.authorized ? (
           <TouchableOpacity
             style={styles.addButtonContainer}
-            onPress={() =>
-              this.props.navigation.navigate("AddAllNightScreen", {
-                loadDrugstores: this.loadDrugstores
-              })
+            onPress={() => navigation.navigate('AddAllNightScreen', {
+              loadDrugstores: this.loadDrugstores,
+            })
             }
           >
             <Image resizeMode="contain" source={plusIcon} style={styles.addButton} />
@@ -97,24 +121,6 @@ export default class AllnightScreen extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    marginTop: 5
-  },
-  addButtonContainer: {
-    position: "absolute",
-    bottom: 5,
-    right: 10,
-    width: 60,
-    height: 60
-  },
-  addButton: {
-    width: 60,
-    height: 60
-  },
-  flatList: {
-    paddingBottom: 60
-  }
-});
+AllnightScreen.propTypes = {
+  navigation: PropTypes.node.isRequired,
+};
