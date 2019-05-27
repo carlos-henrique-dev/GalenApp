@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import InputComponent from '../../components/InputComponent';
+import SelectType from '../../components/SelectType';
 import api from '../../configs/api';
 import colors from '../../configs/common_styles';
 import { LoginScreenStyles } from '../../configs/authscreensStyles';
@@ -59,15 +60,19 @@ class LoginScreen extends Component {
   }
 
   async login() {
-    const { email, password, remember } = this.state;
+    const {
+      email, password, remember, costumer,
+    } = this.state;
     const { navigation, saveLoginData } = this.props;
 
+    const usertype = costumer ? 'costumer' : 'drugstoreadmin';
     this.setLoading();
     if (email.trim() !== '' && password.trim() !== '') {
       try {
         const res = await api.post('user/login', {
           email,
           password,
+          usertype,
         });
         if (res.status === 200) {
           api.defaults.headers.common.Authorization = `bearer ${res.data.response.token}`;
@@ -75,12 +80,20 @@ class LoginScreen extends Component {
             await AsyncStorage.setItem('data', JSON.stringify(res.data.response)).then(() => {
               saveLoginData(res.data.response);
               this.setLoading();
-              navigation.navigate('UserPaths');
+              if (res.data.response.userType === 'costumer') {
+                navigation.navigate('UserPaths');
+              } else if (res.data.response.userType === 'drugstoreadmin') {
+                navigation.navigate('DrugstorePaths');
+              }
             });
           } else {
             saveLoginData(res.data.response);
             this.setLoading();
-            navigation.navigate('UserPaths');
+            if (res.data.response.userType === 'costumer') {
+              navigation.navigate('UserPaths');
+            } else if (res.data.response.userType === 'drugstoreadmin') {
+              navigation.navigate('DrugstorePaths');
+            }
           }
         } else if (res.status === 401) {
           this.setLoading();
@@ -115,10 +128,11 @@ class LoginScreen extends Component {
         <StatusBar backgroundColor={colors.metallicseaweed} barStyle="light-content" />
         <OffilineNotice onChange={this.disableButtons} />
         {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
+
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={{
-            flex: 1,
+            flex: 4,
             width: '100%',
           }}
         >
@@ -129,7 +143,7 @@ class LoginScreen extends Component {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
+            <Text style={{ fontSize: 80, color: colors.fieryrose/* , marginBottom: 20 */ }}>GALEN</Text>
             <View style={LoginScreenStyles.inputBox}>
               <InputComponent
                 icon="user"
@@ -146,15 +160,6 @@ class LoginScreen extends Component {
                 value={password}
                 onChangeText={newPassword => this.setState({ password: newPassword })}
               />
-
-              <TouchableOpacity onPress={() => this.setState({ remember: !remember })} style={LoginScreenStyles.rememberButton}>
-                <Ionicons
-                  name="ios-checkmark"
-                  size={50}
-                  style={remember ? LoginScreenStyles.rememberIconTrue : LoginScreenStyles.rememberIconFalse}
-                />
-                <Text style={[LoginScreenStyles.rememberText, remember === true ? LoginScreenStyles.rememberTextTrue : null]}>Lembre-se de mim</Text>
-              </TouchableOpacity>
             </View>
 
             <TouchableOpacity disabled={disabledButtons} onPress={this.login} style={LoginScreenStyles.loginButton}>
@@ -163,13 +168,18 @@ class LoginScreen extends Component {
           </ScrollView>
         </KeyboardAvoidingView>
 
-        {forgotPassword ? (
-          <TouchableOpacity onPress={() => Alert.alert('recuperando a senha')} style={LoginScreenStyles.forgotButton}>
-            <Text style={LoginScreenStyles.forgotText}>Esqueceu a senha?</Text>
+        <HideWithKeyboard style={LoginScreenStyles.hideContainer}>
+          <TouchableOpacity onPress={() => this.setState({ remember: !remember })} style={LoginScreenStyles.rememberButton}>
+            <Ionicons name="ios-checkmark" size={50} style={remember ? LoginScreenStyles.rememberIconTrue : LoginScreenStyles.rememberIconFalse} />
+            <Text style={[LoginScreenStyles.rememberText, remember === true ? LoginScreenStyles.rememberTextTrue : null]}>Lembre-se de mim</Text>
           </TouchableOpacity>
-        ) : null}
 
-        <HideWithKeyboard style={{ alignItems: 'center', justifyContent: 'center' }}>
+          {forgotPassword ? (
+            <TouchableOpacity onPress={() => Alert.alert('recuperando a senha')} style={LoginScreenStyles.forgotButton}>
+              <Text style={LoginScreenStyles.forgotText}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
+          ) : null}
+
           <TouchableOpacity onPress={this.searchAllnight} style={LoginScreenStyles.findPharmacyButton}>
             <Text style={LoginScreenStyles.findPharmacyText}>Encontrar farmácia de plantão</Text>
           </TouchableOpacity>

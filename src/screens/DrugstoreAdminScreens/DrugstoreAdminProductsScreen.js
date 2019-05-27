@@ -106,7 +106,7 @@ class ProductScreen extends Component {
       .get(`products/user_product/${searchID}`)
       .then((produtcsList) => {
         this.setLoading();
-        this.setState({ products: produtcsList.data.product, refreshing: false });
+        this.setState({ products: produtcsList.data.product, refreshing: false }, () => {});
       })
       .catch(() => {
         this.setLoading();

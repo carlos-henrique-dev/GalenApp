@@ -38,7 +38,6 @@ export default class SignUpScreen extends Component {
       CNPJ: '',
       street: '',
       number: '',
-      aditionalAdressDetail: '',
       neighborhood: '',
       CEP: '',
       city: '',
@@ -169,84 +168,91 @@ export default class SignUpScreen extends Component {
             }}
           >
             <ScrollView contentContainerStyle={SignUpScreenStyles.loginArea}>
-              <Text style={SignUpScreenStyles.loginAreaTitle}> Informe os seguintes dados </Text>
+              <Text style={SignUpScreenStyles.loginAreaTitle}>Dados de cadastro</Text>
               <InputComponent
-                icon="building"
-                placeholder="nome da farmácia"
+                icon="user"
+                placeholder="Nome do responsável *"
+                placeholderTextColor={colors.nyanza}
+                value={destructuredState.user}
+                onChangeText={newUser => this.setState({ user: newUser })}
+              />
+              <InputComponent
+                icon="at"
+                placeholder="e-mail *"
+                placeholderTextColor={colors.nyanza}
+                value={destructuredState.email}
+                onChangeText={newEmail => this.setState({ email: newEmail })}
+              />
+              <InputComponent
+                icon="lock"
+                placeholder="senha *"
+                placeholderTextColor={colors.nyanza}
+                secureTextEntry
+                value={destructuredState.password}
+                onChangeText={newPassword => this.setState({ password: newPassword })}
+              />
+              <InputComponent
+                icon="lock"
+                placeholder="Confirme a senha *"
+                placeholderTextColor={colors.nyanza}
+                secureTextEntry
+                value={destructuredState.passwrepetpasswordord}
+                onChangeText={newRepetpassword => this.setState({ repetpassword: newRepetpassword })}
+              />
+
+              <Text style={SignUpScreenStyles.subTitle}> Informe os seguintes dados da farmácia</Text>
+              <InputComponent
+                placeholder="Nome da farmácia *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.companyName}
                 onChangeText={newCompanyName => this.setState({ companyName: newCompanyName })}
               />
               <InputComponent
-                icon="id-card"
-                placeholder="CNPJ"
+                placeholder="CNPJ *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.CNPJ}
                 onChangeText={newCNPJ => this.setState({ CNPJ: newCNPJ })}
               />
 
-              <TouchableOpacity onPress={() => Alert.alert('selecionou a imagem')}>
-                <InputComponent
-                  icon="paperclip"
-                  placeholder="Selecione uma foto da sua farmácia"
-                  editable={false}
-                  placeholderTextColor={colors.nyanza}
-                  style={{ fontSize: 14 }}
-                />
-              </TouchableOpacity>
-
-              <Text style={SignUpScreenStyles.subTitle}>Dado de localização</Text>
+              <Text style={SignUpScreenStyles.subTitle}>localização</Text>
               <InputComponent
-                icon="road"
-                placeholder="Rua"
+                placeholder="Rua *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.street}
                 onChangeText={newStreet => this.setState({ street: newStreet })}
               />
+
               <View style={{ flexDirection: 'row' }}>
                 <InputComponent
-                  icon="phone"
-                  placeholder="Número"
+                  placeholder="Número *"
                   special
                   placeholderTextColor={colors.nyanza}
                   value={destructuredState.number}
                   onChangeText={newNumber => this.setState({ number: newNumber })}
                 />
+
                 <InputComponent
-                  icon="plus"
-                  placeholder="Complemento"
+                  placeholder="Bairro"
                   special
                   placeholderTextColor={colors.nyanza}
-                  value={destructuredState.aditionalAdressDetail}
-                  onChangeText={newAditionalAdressDetail => this.setState({
-                    aditionalAdressDetail: newAditionalAdressDetail,
-                  })
-                  }
+                  value={destructuredState.neighborhood}
+                  onChangeText={newNeighborhood => this.setState({ neighborhood: newNeighborhood })}
                 />
               </View>
+
               <InputComponent
-                icon="road"
-                placeholder="Bairro"
-                placeholderTextColor={colors.nyanza}
-                value={destructuredState.neighborhood}
-                onChangeText={newNeighborhood => this.setState({ neighborhood: newNeighborhood })}
-              />
-              <InputComponent
-                icon="phone"
-                placeholder="CEP"
+                placeholder="CEP *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.CEP}
                 onChangeText={newCEP => this.setState({ CEP: newCEP })}
               />
               <InputComponent
-                icon="road"
-                placeholder="Cidade"
+                placeholder="Cidade *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.city}
                 onChangeText={newCity => this.setState({ city: newCity })}
               />
               <InputComponent
-                icon="road"
                 placeholder="Estado"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.currentstate}
@@ -255,50 +261,16 @@ export default class SignUpScreen extends Component {
 
               <Text style={SignUpScreenStyles.subTitle}>Contato</Text>
               <InputComponent
-                icon="phone"
-                placeholder="Tel:"
+                placeholder="Tel: *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.tel}
                 onChangeText={newTel => this.setState({ tel: newTel })}
               />
               <InputComponent
-                icon="phone"
                 placeholder="Cel:"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.cel}
                 onChangeText={newCel => this.setState({ cel: newCel })}
-              />
-
-              <Text style={SignUpScreenStyles.subTitle}>Dados da conta</Text>
-              <InputComponent
-                icon="user"
-                placeholder="usuário"
-                placeholderTextColor={colors.nyanza}
-                value={destructuredState.user}
-                onChangeText={newUser => this.setState({ user: newUser })}
-              />
-              <InputComponent
-                icon="at"
-                placeholder="e-mail"
-                placeholderTextColor={colors.nyanza}
-                value={destructuredState.email}
-                onChangeText={newEmail => this.setState({ email: newEmail })}
-              />
-              <InputComponent
-                icon="lock"
-                placeholder="senha"
-                placeholderTextColor={colors.nyanza}
-                secureTextEntry
-                value={destructuredState.password}
-                onChangeText={newPassword => this.setState({ password: newPassword })}
-              />
-              <InputComponent
-                icon="lock"
-                placeholder="Confirme a senha"
-                placeholderTextColor={colors.nyanza}
-                secureTextEntry
-                value={destructuredState.passwrepetpasswordord}
-                onChangeText={newRepetpassword => this.setState({ repetpassword: newRepetpassword })}
               />
             </ScrollView>
           </KeyboardAvoidingView>

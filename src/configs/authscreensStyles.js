@@ -99,13 +99,21 @@ export const LoginScreenStyles = StyleSheet.create({
     alignItems: 'center',
   },
   inputBox: {
+    backgroundColor: '#f00',
     width: '100%',
-    height: 200,
+    height: 100,
     padding: 10,
-    marginTop: 10,
+    // marginTop: 10,
     marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  hideContainer: {
+    backgroundColor: '#00f',
+    flex: 2,
+    width,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   // login button
   loginButton: {
@@ -132,8 +140,8 @@ export const LoginScreenStyles = StyleSheet.create({
   },
   // remember-me
   rememberButton: {
-    marginTop: 20,
-    margin: 5,
+    // marginTop: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -184,8 +192,9 @@ export const SignUpScreenStyles = StyleSheet.create({
   },
   loginAreaTitle: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
     color: colors.nyanza,
+    marginBottom: 5,
   },
   pickImage: {
     margin: 15,
@@ -199,7 +208,7 @@ export const SignUpScreenStyles = StyleSheet.create({
     marginRight: 5,
   },
   subTitle: {
-    marginTop: 10,
+    marginTop: 15,
     color: colors.nyanza,
     fontSize: 18,
     fontWeight: 'bold',

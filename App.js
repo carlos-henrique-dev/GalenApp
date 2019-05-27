@@ -7,12 +7,14 @@ import configureStore from './src/store/store';
 import SplashScreen from './src/screens/AuthScreens/SplashScreen';
 import AuthPaths from './src/screens/AuthScreens/AuthStackConfig';
 import UserPaths from './src/screens/UserScreens/UserStackConfig';
+import DrugstorePaths from './src/screens/DrugstoreAdminScreens/DrugstoreAdminStackConfig';
 
 const SwitchPaths = createSwitchNavigator(
   {
     SplashScreen,
     AuthPaths,
     UserPaths,
+    DrugstorePaths,
   },
   { initialRouteName: 'SplashScreen' },
 );
