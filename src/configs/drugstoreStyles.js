@@ -14,14 +14,15 @@ export const DrugstoreDetailsStyles = StyleSheet.create({
     width,
     height: 200,
     justifyContent: 'center',
+    backgroundColor: colors.nyanza,
   },
   image: {
     flex: 1,
   },
   imageText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#CED4DA',
+    // fontWeight: 'bold',
+    color: '#c3c3c3',
     textAlign: 'center',
   },
   detailContainer: {

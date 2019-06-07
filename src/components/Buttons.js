@@ -15,11 +15,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
-    padding: 10,
+    padding: 5,
+    shadowColor: colors.queenblue,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   text: {
-    flex: 0.8,
-    fontSize: 18,
+    fontSize: 20,
     color: colors.fieryrose,
     textAlign: 'center',
     flexWrap: 'wrap',

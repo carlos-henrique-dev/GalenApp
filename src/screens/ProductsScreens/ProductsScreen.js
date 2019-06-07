@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Alert,
+  View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import api from '../../configs/api';
@@ -58,6 +58,7 @@ export default class ProductScreen extends Component {
     this.state = {
       refreshing: false,
       products: [],
+      loading: false,
     };
 
     this.loadProducts = this.loadProducts.bind(this);
@@ -68,9 +69,10 @@ export default class ProductScreen extends Component {
     this.loadProducts();
   }
 
-  filter = () => {
-    Alert.alert('filtrando');
-  };
+  setLoading() {
+    const { loading } = this.state;
+    this.setState({ loading: !loading });
+  }
 
   openUserList = (userID, userName) => {
     const { navigation } = this.props;
@@ -78,6 +80,10 @@ export default class ProductScreen extends Component {
       idToSearch: userID,
       userName,
     });
+  };
+
+  filter = () => {
+    Alert.alert('filtrando');
   };
 
   plusButton = () => {
@@ -100,10 +106,12 @@ export default class ProductScreen extends Component {
   }
 
   loadProducts() {
+    this.setLoading();
     api
       .get('products')
       .then((produtctsList) => {
         this.setState({ products: produtctsList.data.products, refreshing: false });
+        this.setLoading();
       })
       .catch(() => {
         this.setState({ refreshing: false });
@@ -111,12 +119,10 @@ export default class ProductScreen extends Component {
   }
 
   render() {
-    const { products, refreshing } = this.state;
+    const { products, refreshing, loading } = this.state;
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.filter} onPress={this.filter}>
-          <Text style={styles.filterText}>Filtros</Text>
-        </TouchableOpacity>
+        {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
         <FlatList
           data={products}
           renderItem={({ item }) => <Product product={item} publicList openUserList={this.openUserList} />}

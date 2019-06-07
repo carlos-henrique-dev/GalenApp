@@ -31,8 +31,18 @@ const PharmacyCard = (props) => {
         <View style={PharmacyCardStyles.dadosContainer}>
           <Text style={PharmacyCardStyles.title}>{dados.name}</Text>
           <Text style={PharmacyCardStyles.contact}>Contato</Text>
-          <TouchableOpacity style={PharmacyCardStyles.contactContainer} onPress={() => makeCall(`${dados.contact.areacode}${dados.contact.number}`)}>
-            <Text style={PharmacyCardStyles.pharmacyContact}>{`(${dados.contact.areacode}) ${dados.contact.number}`}</Text>
+          <TouchableOpacity
+            style={PharmacyCardStyles.contactContainer}
+            onPress={() => makeCall(
+              `${dados.contact ? dados.contact.areacode : dados.contacts.areacode}${dados.contact ? dados.contact.number : dados.contacts.number}`,
+            )
+            }
+          >
+            {dados.contact ? (
+              <Text style={PharmacyCardStyles.pharmacyContact}>{`(${dados.contact.areacode}) ${dados.contact.number}`}</Text>
+            ) : (
+              <Text style={PharmacyCardStyles.pharmacyContact}>{`(${dados.contacts[0].areacode}) ${dados.contacts[0].number}`}</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, Alert, ToastAndroid,
+  View, FlatList, TouchableOpacity, Alert, ToastAndroid, Image, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,15 +8,16 @@ import api from '../../configs/api';
 import colors from '../../configs/common_styles';
 import Product from '../../components/Product';
 import { UserProductsScreenStyles } from '../../configs/productsStyles';
+import plusIcon from '../../assets/icon_plus.png';
 
 class ProductScreen extends Component {
   static propTypes = {
     navigation: PropTypes.objectOf(Object).isRequired,
-    userId: PropTypes.string.isRequired,
+    drugstoreID: PropTypes.string.isRequired,
   };
 
-  static navigationOptions = ({ navigation }) => ({
-    headerTitle: navigation.state.params.userName ? `Produtos de ${navigation.state.params.userName}` : 'Seus Produtos',
+  static navigationOptions = () => ({
+    headerTitle: 'Seus Produtos',
     headerTintColor: colors.nyanza,
     headerStyle: {
       backgroundColor: colors.fieryrose,
@@ -30,6 +31,7 @@ class ProductScreen extends Component {
       searchID: '',
       refreshing: false,
       products: [],
+      loading: false,
     };
 
     this.loadProducts = this.loadProducts.bind(this);
@@ -38,10 +40,10 @@ class ProductScreen extends Component {
   }
 
   componentDidMount() {
-    const { navigation, userId } = this.props;
+    const { drugstoreID } = this.props;
     this.setState(
       {
-        searchID: navigation.state.params.idToSearch === undefined ? userId : navigation.state.params.idToSearch,
+        searchID: drugstoreID,
       },
       () => {
         this.loadProducts();
@@ -98,6 +100,13 @@ class ProductScreen extends Component {
     Alert.alert('filtrando');
   };
 
+  plusButton = () => {
+    const { navigation } = this.props;
+    navigation.navigate('AddProductScreen', {
+      loadproducts: this.loadProducts,
+    });
+  };
+
   loadProducts() {
     const { searchID } = this.state;
     this.setLoading();
@@ -106,7 +115,7 @@ class ProductScreen extends Component {
       .get(`products/user_product/${searchID}`)
       .then((produtcsList) => {
         this.setLoading();
-        this.setState({ products: produtcsList.data.product, refreshing: false }, () => {});
+        this.setState({ products: produtcsList.data.product, refreshing: false });
       })
       .catch(() => {
         this.setLoading();
@@ -127,18 +136,11 @@ class ProductScreen extends Component {
   }
 
   render() {
-    const { refreshing, products } = this.state;
+    const { refreshing, products, loading } = this.state;
     const { navigation } = this.props;
     return (
       <View style={UserProductsScreenStyles.container}>
-        <TouchableOpacity style={UserProductsScreenStyles.filter} onPress={this.filter}>
-          <Text style={UserProductsScreenStyles.filterText}>Filtros</Text>
-        </TouchableOpacity>
-        <View>
-          {products.length > 0 ? (
-            <Text style={UserProductsScreenStyles.userWhoPosted}>{`Produtos postados por: ${products[0].userWhoPostedName}`}</Text>
-          ) : null}
-        </View>
+        {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
         <FlatList
           data={products}
           renderItem={({ item }) => (
@@ -155,13 +157,17 @@ class ProductScreen extends Component {
           refreshing={refreshing}
           onRefresh={this.handleRefresh}
         />
+
+        <TouchableOpacity style={UserProductsScreenStyles.addButtonContainer} onPress={this.plusButton}>
+          <Image resizeMode="contain" source={plusIcon} style={UserProductsScreenStyles.addButton} />
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  userId: state.user.id,
+  drugstoreID: state.drugstore.id,
 });
 
 export default connect(mapStateToProps)(ProductScreen);

@@ -14,20 +14,23 @@ const styles = StyleSheet.create({
 });
 
 const UserNameHeader = (props) => {
-  const { userName } = props;
-  return <Text style={styles.text}>{userName}</Text>;
+  const { userName, drugstorename } = props;
+  return <Text style={styles.text}>{userName !== '' ? userName : drugstorename}</Text>;
 };
 
 const mapStateToProps = state => ({
   userName: state.user.name,
+  drugstorename: state.drugstore.name,
 });
 
 UserNameHeader.propTypes = {
   userName: PropTypes.string,
+  drugstorename: PropTypes.string,
 };
 
 UserNameHeader.defaultProps = {
   userName: '',
+  drugstorename: '',
 };
 
 export default connect(mapStateToProps)(UserNameHeader);

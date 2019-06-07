@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import api from '../../configs/api';
 import { userLogin } from '../../store/ducks/user';
+import { drugstoreLogin } from '../../store/ducks/drugstore';
 import colors from '../../configs/common_styles';
 
 const styles = StyleSheet.create({
@@ -24,12 +25,14 @@ const styles = StyleSheet.create({
 class SplashScreen extends Component {
   static propTypes = {
     navigation: PropTypes.objectOf(Object),
-    saveLoginData: PropTypes.func,
+    saveCostumerLoginData: PropTypes.func,
+    saveDrugstoreLoginData: PropTypes.func,
   };
 
   static defaultProps = {
     navigation: null,
-    saveLoginData: null,
+    saveCostumerLoginData: null,
+    saveDrugstoreLoginData: null,
   };
 
   static navigationOptions = {
@@ -46,22 +49,31 @@ class SplashScreen extends Component {
   }
 
   async componentDidMount() {
-    const { navigation, saveLoginData } = this.props;
+    const { navigation, saveCostumerLoginData, saveDrugstoreLoginData } = this.props;
     this.setLoading();
+    const getuserType = await AsyncStorage.getItem('userType');
+    const userType = await JSON.parse(getuserType);
     await AsyncStorage.getItem('data')
       .then((result) => {
         const res = JSON.parse(result) || null;
 
         if (res !== null) {
           api.defaults.headers.common.Authorization = `bearer ${res.token}`;
-          saveLoginData(res);
           this.setLoading();
-          navigation.navigate('UserMainScreen');
+          if (userType === 'costumer') {
+            saveCostumerLoginData(res);
+            navigation.navigate('UserMainScreen');
+          } else if (userType === 'drugstoreadmin') {
+            saveDrugstoreLoginData(res);
+
+            navigation.navigate('DrugstoreAdminMainScreen');
+          }
         } else {
           navigation.navigate('LoginScreen');
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log('err', err);
         ToastAndroid.show('erro', ToastAndroid.SHORT);
       });
   }
@@ -82,7 +94,10 @@ class SplashScreen extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({ saveLoginData: data => dispatch(userLogin(data)) });
+const mapDispatchToProps = dispatch => ({
+  saveCostumerLoginData: data => dispatch(userLogin(data)),
+  saveDrugstoreLoginData: data => dispatch(drugstoreLogin(data)),
+});
 
 export default connect(
   null,

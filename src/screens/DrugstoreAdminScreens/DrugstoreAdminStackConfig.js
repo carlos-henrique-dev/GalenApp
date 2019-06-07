@@ -5,6 +5,7 @@ import DrugstoreAdminProductsScreen from './DrugstoreAdminProductsScreen';
 import AddProductScreen from '../ProductsScreens/AddProductScreen';
 import EditProductScreen from '../ProductsScreens/EditProductScreen';
 import DrugstoreAdminSettingsScreen from './DrugstoreAdminSettingsScreen';
+import DrugstoreAdminEditProfile from './DrugstoreAdminEditProfile';
 
 const ProfileNavigator = createStackNavigator({
   DrugstoreAdminMainScreen,
@@ -12,6 +13,7 @@ const ProfileNavigator = createStackNavigator({
   AddProductScreen,
   EditProductScreen,
   DrugstoreAdminSettingsScreen,
+  DrugstoreAdminEditProfile,
 });
 
 export default createAppContainer(ProfileNavigator);

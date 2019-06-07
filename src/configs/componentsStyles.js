@@ -20,6 +20,14 @@ export const PostProductFormStyles = StyleSheet.create({
     height: 45,
     margin: 12,
   },
+  textInput2: {
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.fieryrose,
+    width: width - 225,
+    height: 45,
+    margin: 12,
+  },
   text: {
     position: 'absolute',
     top: 10,
@@ -61,7 +69,8 @@ export const PostProductFormStyles = StyleSheet.create({
   },
   imageText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
+    color: colors.queenblue,
   },
   footButtons: {
     flexDirection: 'row',
@@ -70,7 +79,6 @@ export const PostProductFormStyles = StyleSheet.create({
   postButton: {
     marginTop: 35,
     margin: 10,
-    backgroundColor: colors.pistachio,
     borderRadius: 10,
     height: 40,
     width: (width * 40) / 100,
@@ -158,7 +166,7 @@ export const PharmacyCardStyles = StyleSheet.create({
   },
 });
 
-export const PortAllNightFormStyles = StyleSheet.create({
+export const PostAllNightFormStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-around',
@@ -222,8 +230,8 @@ export const PortAllNightFormStyles = StyleSheet.create({
   },
   imageText: {
     textAlign: 'center',
-    fontSize: 16,
-    color: colors.nyanza,
+    fontSize: 18,
+    color: colors.queenblue,
   },
   footButtons: {
     flexDirection: 'row',
@@ -232,7 +240,6 @@ export const PortAllNightFormStyles = StyleSheet.create({
   postButton: {
     marginTop: 20,
     margin: 10,
-    backgroundColor: colors.pistachio,
     borderRadius: 10,
     height: 40,
     width: (width * 40) / 100,

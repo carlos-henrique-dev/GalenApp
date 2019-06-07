@@ -99,7 +99,6 @@ export const LoginScreenStyles = StyleSheet.create({
     alignItems: 'center',
   },
   inputBox: {
-    backgroundColor: '#f00',
     width: '100%',
     height: 100,
     padding: 10,
@@ -109,8 +108,7 @@ export const LoginScreenStyles = StyleSheet.create({
     alignItems: 'center',
   },
   hideContainer: {
-    backgroundColor: '#00f',
-    flex: 2,
+    // flex: 1,
     width,
     alignItems: 'center',
     justifyContent: 'center',

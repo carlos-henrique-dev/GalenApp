@@ -52,7 +52,7 @@ const InputComponent = (props) => {
 
 InputComponent.propTypes = {
   special: PropTypes.bool,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.string,
   returnKeyType: PropTypes.string,
   style: PropTypes.objectOf(Object),
 };
@@ -61,6 +61,7 @@ InputComponent.defaultProps = {
   special: false,
   returnKeyType: 'done',
   style: null,
+  icon: '',
 };
 
 export default InputComponent;

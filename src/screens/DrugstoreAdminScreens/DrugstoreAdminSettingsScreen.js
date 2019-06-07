@@ -55,12 +55,12 @@ export default class UserSettingsScreen extends Component {
   render() {
     return (
       <View style={UserSettingsScreenStyles.container}>
-        <View style={[UserSettingsScreenStyles.configsCards, { flex: 3 }]}>
+        {/* <View style={[UserSettingsScreenStyles.configsCards, { flex: 3 }]}>
           <Text style={UserSettingsScreenStyles.subTitle}> Configurações da conta </Text>
-        </View>
-        <View style={UserSettingsScreenStyles.divisor} />
+        </View> */}
+        {/*   <View style={UserSettingsScreenStyles.divisor} /> */}
         <View style={[UserSettingsScreenStyles.configsCards, { flex: 1 }]}>
-          <Text style={UserSettingsScreenStyles.subTitle}> Configurações do aplicativo </Text>
+          {/*        <Text style={UserSettingsScreenStyles.subTitle}> Configurações do aplicativo </Text> */}
 
           <View elevation={5} style={UserSettingsScreenStyles.buttonBox}>
             <TouchableOpacity onPress={this.logout}>

@@ -16,17 +16,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import InputComponent from '../../components/InputComponent';
-import SelectType from '../../components/SelectType';
 import api from '../../configs/api';
 import colors from '../../configs/common_styles';
 import { LoginScreenStyles } from '../../configs/authscreensStyles';
 import { userLogin } from '../../store/ducks/user';
+import { drugstoreLogin } from '../../store/ducks/drugstore';
 import OffilineNotice from '../../components/OfflineNotice';
 
 class LoginScreen extends Component {
   static propTypes = {
     navigation: PropTypes.objectOf(Object).isRequired,
-    saveLoginData: PropTypes.func.isRequired,
+    saveCostumerLoginData: PropTypes.func.isRequired,
+    saveDrugstoreLoginData: PropTypes.func.isRequired,
   };
 
   static navigationOptions = {
@@ -63,48 +64,59 @@ class LoginScreen extends Component {
     const {
       email, password, remember, costumer,
     } = this.state;
-    const { navigation, saveLoginData } = this.props;
-
+    const { navigation, saveCostumerLoginData, saveDrugstoreLoginData } = this.props;
     const usertype = costumer ? 'costumer' : 'drugstoreadmin';
+
     this.setLoading();
+    this.disableButtons(true);
+
     if (email.trim() !== '' && password.trim() !== '') {
-      try {
-        const res = await api.post('user/login', {
+      await api
+        .post('user/login', {
           email,
           password,
           usertype,
-        });
-        if (res.status === 200) {
-          api.defaults.headers.common.Authorization = `bearer ${res.data.response.token}`;
-          if (remember) {
-            await AsyncStorage.setItem('data', JSON.stringify(res.data.response)).then(() => {
-              saveLoginData(res.data.response);
+        })
+        .then(async (res) => {
+          if (res.status === 200) {
+            api.defaults.headers.common.Authorization = `bearer ${res.data.response.token}`;
+            if (remember) {
+              await AsyncStorage.setItem('data', JSON.stringify(res.data.response))
+                .then(AsyncStorage.setItem('userType', JSON.stringify(res.data.response.userType)))
+                .then(() => {
+                  if (res.data.response.userType === 'costumer') {
+                    saveCostumerLoginData(res.data.response);
+                    this.setLoading();
+                    navigation.navigate('UserPaths');
+                  } else if (res.data.response.userType === 'drugstoreadmin') {
+                    saveDrugstoreLoginData(res.data.response);
+                    this.setLoading();
+                    navigation.navigate('DrugstorePaths');
+                  }
+                });
+            } else {
+              saveCostumerLoginData(res.data.response);
               this.setLoading();
               if (res.data.response.userType === 'costumer') {
                 navigation.navigate('UserPaths');
               } else if (res.data.response.userType === 'drugstoreadmin') {
                 navigation.navigate('DrugstorePaths');
               }
-            });
-          } else {
-            saveLoginData(res.data.response);
-            this.setLoading();
-            if (res.data.response.userType === 'costumer') {
-              navigation.navigate('UserPaths');
-            } else if (res.data.response.userType === 'drugstoreadmin') {
-              navigation.navigate('DrugstorePaths');
             }
+          } else if (res.status === 401) {
+            this.setLoading();
+            this.disableButtons(false);
+            Alert.alert('Erro', 'Dados inválidos');
           }
-        } else if (res.status === 401) {
+        })
+        .catch(() => {
           this.setLoading();
-          Alert.alert('Erro', 'Dados inválidos');
-        }
-      } catch (error) {
-        this.setLoading();
-        Alert.alert('erro', `Erro no login: ${error}`);
-      }
+          this.disableButtons(false);
+          Alert.alert('erro', 'Erro no login');
+        });
     } else {
       this.setLoading();
+      this.disableButtons(false);
       Alert.alert('erro', 'Campos vazios');
     }
   }
@@ -129,10 +141,14 @@ class LoginScreen extends Component {
         <OffilineNotice onChange={this.disableButtons} />
         {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
 
+        <HideWithKeyboard style={LoginScreenStyles.hideContainer}>
+          <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
+        </HideWithKeyboard>
+
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : null}
           style={{
-            flex: 4,
+            flex: 3,
             width: '100%',
           }}
         >
@@ -143,7 +159,6 @@ class LoginScreen extends Component {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 80, color: colors.fieryrose/* , marginBottom: 20 */ }}>GALEN</Text>
             <View style={LoginScreenStyles.inputBox}>
               <InputComponent
                 icon="user"
@@ -165,15 +180,14 @@ class LoginScreen extends Component {
             <TouchableOpacity disabled={disabledButtons} onPress={this.login} style={LoginScreenStyles.loginButton}>
               <Text style={LoginScreenStyles.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({ remember: !remember })} style={LoginScreenStyles.rememberButton}>
+              <Ionicons name="ios-checkmark" size={50} style={remember ? LoginScreenStyles.rememberIconTrue : LoginScreenStyles.rememberIconFalse} />
+              <Text style={[LoginScreenStyles.rememberText, remember === true ? LoginScreenStyles.rememberTextTrue : null]}>Lembre-se de mim</Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
 
         <HideWithKeyboard style={LoginScreenStyles.hideContainer}>
-          <TouchableOpacity onPress={() => this.setState({ remember: !remember })} style={LoginScreenStyles.rememberButton}>
-            <Ionicons name="ios-checkmark" size={50} style={remember ? LoginScreenStyles.rememberIconTrue : LoginScreenStyles.rememberIconFalse} />
-            <Text style={[LoginScreenStyles.rememberText, remember === true ? LoginScreenStyles.rememberTextTrue : null]}>Lembre-se de mim</Text>
-          </TouchableOpacity>
-
           {forgotPassword ? (
             <TouchableOpacity onPress={() => Alert.alert('recuperando a senha')} style={LoginScreenStyles.forgotButton}>
               <Text style={LoginScreenStyles.forgotText}>Esqueceu a senha?</Text>
@@ -193,7 +207,10 @@ class LoginScreen extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({ saveLoginData: data => dispatch(userLogin(data)) });
+const mapDispatchToProps = dispatch => ({
+  saveCostumerLoginData: data => dispatch(userLogin(data)),
+  saveDrugstoreLoginData: data => dispatch(drugstoreLogin(data)),
+});
 
 export default connect(
   null,

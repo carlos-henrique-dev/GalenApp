@@ -46,13 +46,11 @@ export default class AllnightScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false,
       drugstores: [],
       loading: false,
     };
 
     this.loadDrugstores = this.loadDrugstores.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
     this.setLoading = this.setLoading.bind(this);
   }
 
@@ -65,30 +63,20 @@ export default class AllnightScreen extends Component {
   }
 
   loadDrugstores() {
+    this.setLoading();
     api
       .get('allnight_drugstore')
       .then((drugstoresList) => {
+        this.setLoading();
         this.setState({
-          drugstores: drugstoresList.data.list_of_drugstores,
-          refreshing: false,
+          drugstores: drugstoresList.data.drugstores,
         });
       })
       .catch(() => {
-        this.setState({ refreshing: false });
+        this.setState({ loading: false });
       });
   }
 
-  handleRefresh() {
-    const { refreshing } = this.state;
-    this.setState(
-      {
-        refreshing: !refreshing,
-      },
-      () => {
-        this.loadDrugstores();
-      },
-    );
-  }
 
   renderItem = (drugstore) => {
     const { navigation } = this.props;
@@ -104,9 +92,8 @@ export default class AllnightScreen extends Component {
   };
 
   render() {
-    const { drugstores, refreshing } = this.state;
+    const { drugstores, loading } = this.state;
     const { navigation } = this.props;
-
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
@@ -116,8 +103,8 @@ export default class AllnightScreen extends Component {
           keyExtractor={item => item._id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.flatList}
-          refreshing={refreshing}
-          onRefresh={this.handleRefresh}
+          refreshing={loading}
+          onRefresh={this.loadDrugstores}
         />
 
         {navigation.state.params.authorized ? (

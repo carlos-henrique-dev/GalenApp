@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, TouchableOpacity, StatusBar, ToastAndroid,
+  View, Text, Image, TouchableOpacity, StatusBar, ToastAndroid, 
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { createOpenLink } from 'react-native-open-maps';
@@ -15,11 +15,11 @@ export default class componentName extends Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: navigation.state.params.data.name,
-    headerTintColor: colors.nyanza,
+    headerTintColor: colors.fieryrose,
     headerTransparent: true,
     headerTitleStyle: {
       fontWeight: 'bold',
-      color: colors.nyanza,
+      color: colors.fieryrose,
       textShadowColor: colors.black,
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 10,
@@ -101,11 +101,6 @@ export default class componentName extends Component {
         <TouchableOpacity onPress={openDrugstoreOnMap}>
           <Text style={DrugstoreDetailsStyles.openMap}>Abrir no mapa</Text>
         </TouchableOpacity>
-        {/*
-                TODO: verificar se é uma farmácia temporária ou não
-                <View style={styles.productButton}>
-                    <Text style={styles.productText}>Ver produtos comprados nesta farmácia</Text>
-                </View> */}
       </View>
     );
   }

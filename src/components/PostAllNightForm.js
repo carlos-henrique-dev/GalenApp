@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, TextInput, Dimensions, Image, Alert, ToastAndroid,
+  View, Text, TouchableOpacity, TextInput, Dimensions, Image, ToastAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer/index.android';
 import Geocoder from 'react-native-geocoding';
-import { mapskey } from '../configs/maps';
+import mapskey from '../configs/maps';
 
-import { PortAllNightFormStyles } from '../configs/componentsStyles';
+import { PostAllNightFormStyles } from '../configs/componentsStyles';
 
 import colors from '../configs/common_styles';
 
@@ -92,7 +92,7 @@ export default class PostProductForm extends Component {
     } = this.state;
     const { onPost } = this.props;
 
-    if (drugstorename.trim() !== '' && contact.trim() !== '' && neighborhoodName.trim() !== '') {
+    if (drugstorename.trim() !== '' && contact.trim() !== '' && number.trim() !== '') {
       const splitAreacode = contact.split('', 2);
       const splitNumber = contact.slice(2);
 
@@ -123,22 +123,22 @@ export default class PostProductForm extends Component {
     } = this.state;
     const { onCancel } = this.props;
     return (
-      <View style={PortAllNightFormStyles.container}>
-        <View style={PortAllNightFormStyles.textArea}>
-          {drugstorename !== '' ? <Text style={PortAllNightFormStyles.text}> Nome da farmácia * </Text> : null}
+      <View style={PostAllNightFormStyles.container}>
+        <View style={PostAllNightFormStyles.textArea}>
+          {drugstorename !== '' ? <Text style={PostAllNightFormStyles.text}> Nome da farmácia * </Text> : null}
           <TextInput
             placeholder="Nome da farmácia *"
-            style={PortAllNightFormStyles.textInput}
+            style={PostAllNightFormStyles.textInput}
             value={drugstorename}
             placeholderTextColor={colors.queenblue}
             onChangeText={newDrugstorename => this.setState({ drugstorename: newDrugstorename })}
           />
         </View>
-        <View style={PortAllNightFormStyles.textArea}>
-          {contact !== '' ? <Text style={PortAllNightFormStyles.text}> Contato * </Text> : null}
+        <View style={PostAllNightFormStyles.textArea}>
+          {contact !== '' ? <Text style={PostAllNightFormStyles.text}> Contato * </Text> : null}
           <TextInput
             placeholder="Contato *"
-            style={PortAllNightFormStyles.textInput}
+            style={PostAllNightFormStyles.textInput}
             value={contact}
             keyboardType="numeric"
             mas
@@ -146,30 +146,30 @@ export default class PostProductForm extends Component {
             onChangeText={newContact => this.setState({ contact: newContact })}
           />
         </View>
-        <View style={PortAllNightFormStyles.textArea}>
-          {streetName !== '' ? <Text style={PortAllNightFormStyles.text}> Rua * </Text> : null}
+        <View style={PostAllNightFormStyles.textArea}>
+          {streetName !== '' ? <Text style={PostAllNightFormStyles.text}> Rua * </Text> : null}
           <TextInput
             placeholder="Rua *"
-            style={PortAllNightFormStyles.textInput}
+            style={PostAllNightFormStyles.textInput}
             value={streetName}
             placeholderTextColor={colors.queenblue}
             onChangeText={newStreetName => this.setState({ streetName: newStreetName })}
           />
         </View>
-        <View style={PortAllNightFormStyles.numberNeighborArea}>
-          {neighborhoodName !== '' ? <Text style={PortAllNightFormStyles.text}> Bairro * </Text> : null}
+        <View style={PostAllNightFormStyles.numberNeighborArea}>
+          {neighborhoodName !== '' ? <Text style={PostAllNightFormStyles.text}>Bairro</Text> : null}
           <TextInput
-            placeholder="Bairro *"
-            style={[PortAllNightFormStyles.textInput, { width: (width * 65) / 100 }]}
+            placeholder="Bairro"
+            style={[PostAllNightFormStyles.textInput, { width: (width * 65) / 100 }]}
             value={neighborhoodName}
             placeholderTextColor={colors.queenblue}
             onChangeText={newNeighborhoodName => this.setState({ neighborhoodName: newNeighborhoodName })}
           />
           <View>
-            {number !== '' ? <Text style={PortAllNightFormStyles.text}> Número </Text> : null}
+            {number !== '' ? <Text style={PostAllNightFormStyles.text}>Número *</Text> : null}
             <TextInput
-              placeholder="Número"
-              style={[PortAllNightFormStyles.textInput, { width: (width * 25) / 100 }]}
+              placeholder="Número *"
+              style={[PostAllNightFormStyles.textInput, { width: (width * 25) / 100 }]}
               value={number}
               keyboardType="number-pad"
               placeholderTextColor={colors.queenblue}
@@ -178,30 +178,30 @@ export default class PostProductForm extends Component {
           </View>
         </View>
 
-        <TouchableOpacity onPress={this.getUserPosition} style={PortAllNightFormStyles.getLocation}>
-          <Text style={PortAllNightFormStyles.getLocationText}>Pegar a localização automaticamente</Text>
+        <TouchableOpacity onPress={this.getUserPosition} style={PostAllNightFormStyles.getLocation}>
+          <Text style={PostAllNightFormStyles.getLocationText}>Pegar a localização automaticamente</Text>
         </TouchableOpacity>
 
-        <View style={PortAllNightFormStyles.imageArea}>
-          {file ? <Image source={{ uri: file.uri }} style={PortAllNightFormStyles.image} /> : <View style={PortAllNightFormStyles.image} />}
+        <View style={PostAllNightFormStyles.imageArea}>
+          {file ? <Image source={{ uri: file.uri }} style={PostAllNightFormStyles.image} /> : <View style={PostAllNightFormStyles.image} />}
           <View>
-            <TouchableOpacity onPress={this.handleGetPhoto} style={PortAllNightFormStyles.imageButton}>
-              <Text style={PortAllNightFormStyles.imageText}>Insira uma foto</Text>
+            <TouchableOpacity onPress={this.handleGetPhoto} style={PostAllNightFormStyles.imageButton}>
+              <Text style={PostAllNightFormStyles.imageText}>Insira uma foto</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={PortAllNightFormStyles.footButtons}>
+        <View style={PostAllNightFormStyles.footButtons}>
           <TouchableOpacity
             onPress={() => {
               onCancel();
             }}
-            style={PortAllNightFormStyles.postButton}
+            style={[PostAllNightFormStyles.postButton, { backgroundColor: colors.fieryrose }]}
           >
-            <Text style={PortAllNightFormStyles.imageText}>Cancelar</Text>
+            <Text style={PostAllNightFormStyles.imageText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.sendDrugstoreData} style={PortAllNightFormStyles.postButton}>
-            <Text style={PortAllNightFormStyles.imageText}>Postar</Text>
+          <TouchableOpacity onPress={this.sendDrugstoreData} style={[PostAllNightFormStyles.postButton, { backgroundColor: colors.pistachio }]}>
+            <Text style={PostAllNightFormStyles.imageText}>Postar</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StatusBar, Alert, KeyboardAvoidingView, ActivityIndicator, Platform,
+  View, Text, ScrollView, StatusBar, Alert, KeyboardAvoidingView, ActivityIndicator, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
@@ -30,45 +30,97 @@ export default class SignUpScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: '',
-      password: '',
-      repetpassword: '',
-      email: '',
-      companyName: '',
-      CNPJ: '',
-      street: '',
-      number: '',
-      neighborhood: '',
-      CEP: '',
-      city: '',
-      currentstate: '',
-      tel: '',
-      cel: '',
+      user: 'Henrique farmacia',
+      password: 'farmacia',
+      repeatpassword: 'farmacia',
+      email: 'farmacia1@mail',
+      companyName: 'Primeira Farmácia',
+      CNPJ: '123456',
+      street: 'Rua da primeira farmácia',
+      number: '1234',
+      neighborhood: 'Nenhum',
+      CEP: '79990-000',
+      city: 'Amambai',
+      currentstate: 'MS',
+      tel: '3481-5910',
+      cel: '99923-7078',
+      longitude: '10',
+      latitude: '10',
       loading: false,
     };
     this.signUp = this.signUp.bind(this);
     this.setLoading = this.setLoading.bind(this);
+    this.costumerSignUp = this.costumerSignUp.bind(this);
+    this.drugstoreSignUp = this.drugstoreSignUp.bind(this);
+    this.defineLoginType = this.defineLoginType.bind(this);
   }
 
-  setLoading() {
+  setLoading = () => {
     this.setState(prevState => ({ loading: !prevState.loading }));
-  }
+  };
 
-  async signUp() {
+  costumerSignUp = () => {
+    const { password, email, user } = this.state;
+    return api.post('user/signup', {
+      email,
+      name: user,
+      password,
+      accessType: 'costumer',
+    });
+  };
+
+  drugstoreSignUp = () => {
     const {
-      password, repetpassword, email, user,
+      password,
+      email,
+      user,
+      companyName,
+      CNPJ,
+      street,
+      number,
+      neighborhood,
+      CEP,
+      city,
+      currentstate,
+      tel,
+      cel,
+      longitude,
+      latitude,
     } = this.state;
-    const { navigation } = this.props;
+    const address = {
+      street,
+      number,
+      neighborhood,
+      zipcode: CEP,
+      city,
+      state: currentstate,
+      gpsCoordinates: { longitude, latitude },
+    };
+    const contacts = [{ areacode: '67', number: tel }, { areacode: '67', number: cel }];
+    return api.post('user/signup', {
+      accessType: 'drugstoreadmin',
+      name: companyName,
+      cnpj: CNPJ,
+      address,
+      contacts,
+      manager: user,
+      email,
+      password,
+    });
+  };
 
-    if (password === repetpassword) {
-      this.setLoading();
-      api
-        .post('user/signup', {
-          email,
-          name: user,
-          password,
-          accessType: 'costumer',
-        })
+  defineLoginType = () => {
+    const { navigation } = this.props;
+    return navigation.state.params.type === 'costumer' ? this.costumerSignUp() : this.drugstoreSignUp();
+  };
+
+  signUp = async () => {
+    const { password, repeatpassword } = this.state;
+    const { navigation } = this.props;
+    this.setLoading();
+
+    if (password === repeatpassword) {
+      this.defineLoginType()
         .then((res) => {
           if (res.status === 201) {
             this.setLoading();
@@ -96,7 +148,7 @@ export default class SignUpScreen extends Component {
       this.setLoading();
       Alert.alert('erro', 'As senhas não conferem');
     }
-  }
+  };
 
   render() {
     const destructuredState = this.state;
@@ -154,8 +206,8 @@ export default class SignUpScreen extends Component {
                 returnKeyType="go"
                 placeholderTextColor={colors.nyanza}
                 secureTextEntry={false}
-                value={destructuredState.repetpassword}
-                onChangeText={newRepetpassword => this.setState({ repetpassword: newRepetpassword })}
+                value={destructuredState.repeatpassword}
+                onChangeText={newRepeatpassword => this.setState({ repeatpassword: newRepeatpassword })}
               />
             </ScrollView>
           </KeyboardAvoidingView>
@@ -178,16 +230,16 @@ export default class SignUpScreen extends Component {
               />
               <InputComponent
                 icon="at"
-                placeholder="e-mail *"
+                placeholder="E-mail *"
                 placeholderTextColor={colors.nyanza}
                 value={destructuredState.email}
                 onChangeText={newEmail => this.setState({ email: newEmail })}
               />
               <InputComponent
                 icon="lock"
-                placeholder="senha *"
+                placeholder="Senha *"
                 placeholderTextColor={colors.nyanza}
-                secureTextEntry
+                //  secureTextEntry
                 value={destructuredState.password}
                 onChangeText={newPassword => this.setState({ password: newPassword })}
               />
@@ -195,9 +247,9 @@ export default class SignUpScreen extends Component {
                 icon="lock"
                 placeholder="Confirme a senha *"
                 placeholderTextColor={colors.nyanza}
-                secureTextEntry
-                value={destructuredState.passwrepetpasswordord}
-                onChangeText={newRepetpassword => this.setState({ repetpassword: newRepetpassword })}
+                // secureTextEntry
+                value={destructuredState.repeatpassword}
+                onChangeText={newRepeatpassword => this.setState({ repeatpassword: newRepeatpassword })}
               />
 
               <Text style={SignUpScreenStyles.subTitle}> Informe os seguintes dados da farmácia</Text>

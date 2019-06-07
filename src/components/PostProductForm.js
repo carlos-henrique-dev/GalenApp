@@ -133,11 +133,11 @@ export default class PostProductForm extends Component {
             onPress={() => {
               onCancel();
             }}
-            style={PostProductFormStyles.postButton}
+            style={[PostProductFormStyles.postButton, { backgroundColor: colors.fieryrose }]}
           >
             <Text style={PostProductFormStyles.imageText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.sendProductData} style={PostProductFormStyles.postButton}>
+          <TouchableOpacity onPress={this.sendProductData} style={[PostProductFormStyles.postButton, { backgroundColor: colors.pistachio }]}>
             <Text style={PostProductFormStyles.imageText}>Postar</Text>
           </TouchableOpacity>
         </View>

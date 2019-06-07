@@ -25,14 +25,16 @@ export const UserSettingsScreenStyles = StyleSheet.create({
     paddingRight: 10,
   },
   buttonBox: {
+    marginTop: 10,
+    alignItems: 'center',
     padding: 5,
     backgroundColor: colors.white,
     shadowColor: colors.black,
     shadowOpacity: 0.8,
     shadowRadius: 2,
     shadowOffset: {
-      height: 1,
-      width: 1,
+      height: 0,
+      width: 4,
     },
   },
   buttonText: {

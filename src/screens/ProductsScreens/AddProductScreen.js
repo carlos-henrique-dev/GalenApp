@@ -26,12 +26,16 @@ class AddProductScreen extends Component {
   static propTypes = {
     navigation: PropTypes.objectOf(Object).isRequired,
     userName: PropTypes.string,
-    id: PropTypes.string,
+    userId: PropTypes.string,
+    drugstoreName: PropTypes.string,
+    drugstoreid: PropTypes.string,
   };
 
   static defaultProps = {
     userName: '',
-    id: '',
+    userId: '',
+    drugstoreName: '',
+    drugstoreid: '',
   };
 
   static navigationOptions = {
@@ -56,8 +60,14 @@ class AddProductScreen extends Component {
   }
 
   componentDidMount() {
-    const { userName, id } = this.props;
-    this.setState({ userWhoPostedName: userName, userWhoPostedId: id });
+    const {
+      userName, userId, drugstoreName, drugstoreid,
+    } = this.props;
+    this.setState({
+      userWhoPostedName: userName !== '' ? userName : drugstoreName,
+      userWhoPostedId: userId !== '' ? userId : drugstoreid,
+      userWhoPostedType: userId !== '' ? 'costumer' : 'drugstoreadmin',
+    });
   }
 
   setLoading() {
@@ -68,7 +78,6 @@ class AddProductScreen extends Component {
   async handlUploadProduct(file, name, price, whereToBuy, onSale) {
     const { userWhoPostedId, userWhoPostedName, userWhoPostedType } = this.state;
     const { navigation } = this.props;
-
     this.setLoading();
     const data = new FormData();
     data.append('file', {
@@ -121,8 +130,10 @@ class AddProductScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  id: state.user.id,
+  userId: state.user.id,
   userName: state.user.name,
+  drugstoreid: state.drugstore.id,
+  drugstoreName: state.drugstore.name,
 });
 
 export default connect(mapStateToProps)(AddProductScreen);
