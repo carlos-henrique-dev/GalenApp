@@ -102,18 +102,15 @@ export const LoginScreenStyles = StyleSheet.create({
     width: '100%',
     height: 100,
     padding: 10,
-    // marginTop: 10,
     marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   hideContainer: {
-    // flex: 1,
     width,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // login button
   loginButton: {
     width: 150,
     height: 40,

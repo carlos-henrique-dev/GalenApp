@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   icon: {
-    color: colors.fieryrose,
+    color: colors.nyanza,
     marginLeft: 5,
     marginRight: 5,
     paddingBottom: 0,

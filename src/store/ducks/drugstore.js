@@ -1,7 +1,7 @@
 export const Types = {
   DRUGSTORE_LOGIN: 'DRUGSTORE_LOGIN',
-  DRUGSTORE_LOGOUT: 'DRUGSTORE_LOGOUT',
-  DRUGSTORE_LOGIN_ERROR: 'DRUGSTORE_LOGIN_ERROR',
+  UPDATE_DATA: 'UPDATE_DATA',
+  CHANGE_ALLNIGHT: 'CHANGE_ALLNIGHT',
 };
 
 const initialState = {
@@ -49,6 +49,21 @@ export default function reducer(state = initialState, action) {
         longitude: action.payload.longitude,
         latitude: action.payload.latitude,
       };
+    case Types.UPDATE_DATA:
+      return {
+        ...state,
+        name: action.payload.name,
+        contacts: action.payload.contacts,
+        manager: action.payload.manager,
+        street: action.payload.street,
+        number: action.payload.number,
+        neighborhood: action.payload.neighborhood,
+      };
+    case Types.CHANGE_ALLNIGHT:
+      return {
+        ...state,
+        allNight: action.payload.allNight,
+      };
     default:
       return state;
   }
@@ -74,6 +89,28 @@ export function drugstoreLogin(data) {
       state: data.drugstore.address.state,
       longitude: data.drugstore.address.gpsCoordinates.longitude,
       latitude: data.drugstore.address.gpsCoordinates.latitude,
+    },
+  };
+}
+export function changeAllNight(data) {
+  return {
+    type: Types.CHANGE_ALLNIGHT,
+    payload: {
+      allNight: data.drugstore.allNigth,
+    },
+  };
+}
+
+export function updateData(data) {
+  return {
+    type: Types.UPDATE_DATA,
+    payload: {
+      name: data.name,
+      contacts: data.formattedContacts,
+      manager: data.manager,
+      street: data.street,
+      number: data.number,
+      neighborhood: data.neighborhood,
     },
   };
 }

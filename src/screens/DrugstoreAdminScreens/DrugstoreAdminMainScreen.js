@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
-    backgroundColor: colors.nyanza,
+    backgroundColor: colors.honeydew,
     flex: 1,
     padding: 10,
   },

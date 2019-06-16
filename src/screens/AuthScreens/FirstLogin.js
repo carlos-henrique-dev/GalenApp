@@ -80,14 +80,14 @@ export default class FirstLogin extends Component {
         <Text style={styles.title}>Escolha a opção desejada </Text>
 
         <View style={styles.optionButtom}>
-          <TouchableOpacity onPress={() => this.signUp('drugstore')}>
+          <TouchableOpacity onPress={() => this.signUp('drugstoreadmin')}>
             <Ionicons name="md-globe" size={90} style={styles.icon} />
             <Text style={styles.optionText}>Possuo uma farmácia</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.optionButtom}>
-          <TouchableOpacity onPress={() => this.signUp('custumer')}>
+          <TouchableOpacity onPress={() => this.signUp('costumer')}>
             <Ionicons name="md-people" size={90} style={styles.icon} />
             <Text style={styles.optionText}>Sou cliente</Text>
           </TouchableOpacity>

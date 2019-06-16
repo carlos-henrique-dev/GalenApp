@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, Text, ScrollView, StatusBar, Alert, KeyboardAvoidingView, ActivityIndicator, Platform,
+  View, Text, ScrollView, StatusBar, Alert, KeyboardAvoidingView, ActivityIndicator, Platform, ToastAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
+import Geocoder from 'react-native-geocoding';
 import colors from '../../configs/common_styles';
 import InputComponent from '../../components/InputComponent';
 import Footer from '../../components/Footer';
 import api from '../../configs/api';
+
+import mapskey from '../../configs/maps';
 
 import { SignUpScreenStyles } from '../../configs/authscreensStyles';
 
@@ -30,22 +33,22 @@ export default class SignUpScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: 'Henrique farmacia',
-      password: 'farmacia',
-      repeatpassword: 'farmacia',
-      email: 'farmacia1@mail',
-      companyName: 'Primeira Farmácia',
-      CNPJ: '123456',
-      street: 'Rua da primeira farmácia',
-      number: '1234',
-      neighborhood: 'Nenhum',
-      CEP: '79990-000',
-      city: 'Amambai',
-      currentstate: 'MS',
-      tel: '3481-5910',
-      cel: '99923-7078',
-      longitude: '10',
-      latitude: '10',
+      user: '',
+      password: '',
+      repeatpassword: '',
+      email: '',
+      companyName: '',
+      CNPJ: '',
+      street: '',
+      number: '',
+      neighborhood: '',
+      CEP: '',
+      city: '',
+      currentstate: '',
+      tel: '',
+      cel: '',
+      longitude: '',
+      latitude: '',
       loading: false,
     };
     this.signUp = this.signUp.bind(this);
@@ -54,6 +57,23 @@ export default class SignUpScreen extends Component {
     this.drugstoreSignUp = this.drugstoreSignUp.bind(this);
     this.defineLoginType = this.defineLoginType.bind(this);
   }
+
+  componentDidMount() {
+    Geocoder.init(mapskey, { language: 'pt' });
+    this.getUserPosition();
+  }
+
+  getUserPosition = async () => {
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords: { latitude, longitude } }) => {
+        this.setState({ latitude, longitude });
+      },
+      (err) => {
+        ToastAndroid.show(`Erro ao pegar a localização do usuário \n ${err}`, ToastAndroid.SHORT);
+      },
+      { enableHighAccuracy: true },
+    );
+  };
 
   setLoading = () => {
     this.setState(prevState => ({ loading: !prevState.loading }));
@@ -158,7 +178,7 @@ export default class SignUpScreen extends Component {
       <View behavior="padding" style={SignUpScreenStyles.container} enabled>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
         {destructuredState.loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
-        {navigation.state.params.type === 'custumer' ? (
+        {navigation.state.params.type === 'costumer' ? (
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={{
@@ -196,7 +216,7 @@ export default class SignUpScreen extends Component {
                 placeholder="senha"
                 returnKeyType="next"
                 placeholderTextColor={colors.nyanza}
-                secureTextEntry={false}
+                secureTextEntry
                 value={destructuredState.password}
                 onChangeText={newPassword => this.setState({ password: newPassword })}
               />
@@ -205,7 +225,7 @@ export default class SignUpScreen extends Component {
                 placeholder="Confirme a senha"
                 returnKeyType="go"
                 placeholderTextColor={colors.nyanza}
-                secureTextEntry={false}
+                secureTextEntry
                 value={destructuredState.repeatpassword}
                 onChangeText={newRepeatpassword => this.setState({ repeatpassword: newRepeatpassword })}
               />
@@ -239,7 +259,7 @@ export default class SignUpScreen extends Component {
                 icon="lock"
                 placeholder="Senha *"
                 placeholderTextColor={colors.nyanza}
-                //  secureTextEntry
+                secureTextEntry
                 value={destructuredState.password}
                 onChangeText={newPassword => this.setState({ password: newPassword })}
               />
@@ -247,7 +267,7 @@ export default class SignUpScreen extends Component {
                 icon="lock"
                 placeholder="Confirme a senha *"
                 placeholderTextColor={colors.nyanza}
-                // secureTextEntry
+                secureTextEntry
                 value={destructuredState.repeatpassword}
                 onChangeText={newRepeatpassword => this.setState({ repeatpassword: newRepeatpassword })}
               />

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, TextInput, Switch, Alert,
+  View, Text, TouchableOpacity, TextInput, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { PostProductFormStyles } from '../configs/componentsStyles';
@@ -10,36 +10,43 @@ export default class EditProfileForm extends Component {
   static propTypes = {
     onEdit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    drugstoredata: PropTypes.objectOf(Object).isRequired,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      drugstoreName: '',
-      managerName: '',
+      name: '',
+      manager: '',
       street: '',
       number: '',
-      bairro: '',
+      neighborhood: '',
       tel: '',
-      cel: '',
+      cel: '2',
     };
     this.editDrugstoreData = this.editDrugstoreData.bind(this);
   }
 
+  componentDidMount = () => {
+    const { drugstoredata } = this.props;
+    this.setState({
+      name: drugstoredata.name,
+      manager: drugstoredata.manager,
+      street: drugstoredata.street,
+      number: drugstoredata.number,
+      neighborhood: drugstoredata.neighborhood,
+      tel: drugstoredata.contacts[0].number,
+      cel: drugstoredata.contacts.length > 0 ? drugstoredata.contacts[1].number : '',
+    });
+  };
+
   editDrugstoreData() {
     const {
-      drugstoreName, managerName, street, number, bairro, tel, cel,
+      name, manager, street, number, neighborhood, tel, cel,
     } = this.state;
     const { onEdit } = this.props;
-    if (
-      drugstoreName.trim() !== ''
-      && managerName.trim() !== ''
-      && street.trim() !== ''
-      && number.trim() !== ''
-      && tel.trim() !== ''
-      && cel.trim() !== ''
-    ) {
-      onEdit(drugstoreName, managerName, street, number, bairro, tel, cel);
+    if (name.trim() !== '' && manager.trim() !== '' && street.trim() !== '' && number.trim() !== '' && tel.trim() !== '' && cel.trim() !== '') {
+      onEdit(name, manager, street, number, neighborhood, tel, cel);
     } else {
       Alert.alert('Erro', 'preencha os campos corretamente');
     }
@@ -47,35 +54,35 @@ export default class EditProfileForm extends Component {
 
   render() {
     const {
-      drugstoreName, managerName, street, number, bairro, tel, cel,
+      name, manager, street, number, neighborhood, tel, cel,
     } = this.state;
     const { onCancel } = this.props;
     return (
       <View style={PostProductFormStyles.container}>
         <View style={PostProductFormStyles.textArea}>
-          {drugstoreName !== '' ? <Text style={PostProductFormStyles.text}>Nome da farmácia</Text> : null}
+          {name !== '' ? <Text style={PostProductFormStyles.text}>Nome da farmácia</Text> : null}
           <TextInput
             placeholder="Nome da farmácia"
             style={PostProductFormStyles.textInput}
-            value={drugstoreName}
+            value={name}
             placeholderTextColor={colors.queenblue}
-            onChangeText={newdrugstoreName => this.setState({ drugstoreName: newdrugstoreName })}
+            onChangeText={newname => this.setState({ name: newname })}
           />
         </View>
         <View style={PostProductFormStyles.textArea}>
-          {managerName !== '' ? <Text style={PostProductFormStyles.text}>Nome do responsável</Text> : null}
+          {manager !== '' ? <Text style={PostProductFormStyles.text}>Nome do responsável</Text> : null}
           <TextInput
             placeholder="Nome do responsável"
             style={PostProductFormStyles.textInput}
-            value={managerName}
+            value={manager}
             placeholderTextColor={colors.queenblue}
-            onChangeText={newmanagerName => this.setState({ managerName: newmanagerName })}
+            onChangeText={newmanagerName => this.setState({ manager: newmanagerName })}
           />
         </View>
         <View style={PostProductFormStyles.textArea}>
           {street !== '' ? <Text style={PostProductFormStyles.text}>Rua</Text> : null}
           <TextInput
-            placeholder="street"
+            placeholder="Rua"
             style={PostProductFormStyles.textInput}
             value={street}
             placeholderTextColor={colors.queenblue}
@@ -83,13 +90,13 @@ export default class EditProfileForm extends Component {
           />
         </View>
         <View style={PostProductFormStyles.textArea}>
-          {bairro !== '' ? <Text style={PostProductFormStyles.text}>Bairro</Text> : null}
+          {neighborhood !== '' ? <Text style={PostProductFormStyles.text}>Bairro</Text> : null}
           <TextInput
-            placeholder="Bairro"
+            placeholder="bairro"
             style={PostProductFormStyles.textInput}
-            value={bairro}
+            value={neighborhood}
             placeholderTextColor={colors.queenblue}
-            onChangeText={newbairro => this.setState({ bairro: newbairro })}
+            onChangeText={newneighborhood => this.setState({ neighborhood: newneighborhood })}
           />
         </View>
         <View style={PostProductFormStyles.textArea}>
@@ -130,7 +137,7 @@ export default class EditProfileForm extends Component {
           <TouchableOpacity onPress={onCancel} style={PostProductFormStyles.postButton}>
             <Text style={PostProductFormStyles.imageText}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.sendProductData} style={PostProductFormStyles.postButton}>
+          <TouchableOpacity onPress={this.editDrugstoreData} style={PostProductFormStyles.postButton}>
             <Text style={PostProductFormStyles.imageText}>Editar</Text>
           </TouchableOpacity>
         </View>

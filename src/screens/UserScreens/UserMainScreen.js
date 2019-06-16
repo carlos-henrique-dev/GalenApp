@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
-    backgroundColor: colors.nyanza,
+    backgroundColor: colors.honeydew,
     flex: 1,
     padding: 10,
   },
@@ -56,7 +56,7 @@ class UserMainScreen extends Component {
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.fieryrose} barStyle="light-content" />
         <Buttons title="Buscar farmácias de plantão" navigateFunc={() => this.onNavigate('AllnightScreen')} />
-        <Buttons title="Buscar farmácias abertas na região" navigateFunc={() => this.onNavigate('openDrugstores')} />
+        <Buttons title="Buscar farmácias abertas na região" navigateFunc={() => this.onNavigate('Opendrugstores')} />
         <Buttons title="Pesquisar produtos" navigateFunc={() => this.onNavigate('ProductsScreen')} />
         <Buttons title="Meus produtos" navigateFunc={() => this.onNavigate('UserProductsScreen')} />
       </View>

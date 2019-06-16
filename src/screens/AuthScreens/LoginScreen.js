@@ -37,8 +37,8 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'henrique2@mail.com',
-      password: 'henrique',
+      email: '',
+      password: '',
       remember: false,
       forgotPassword: false,
       loading: false,
@@ -141,7 +141,7 @@ class LoginScreen extends Component {
         <OffilineNotice onChange={this.disableButtons} />
         {loading ? <ActivityIndicator size="large" color={colors.fieryrose} /> : null}
 
-        <HideWithKeyboard style={LoginScreenStyles.hideContainer}>
+        <HideWithKeyboard style={[LoginScreenStyles.hideContainer, { marginTop: 150 }]}>
           <Text style={{ fontSize: 80, color: colors.fieryrose }}>GALEN</Text>
         </HideWithKeyboard>
 
@@ -163,15 +163,15 @@ class LoginScreen extends Component {
               <InputComponent
                 icon="user"
                 placeholder="usuário"
-                placeholderTextColor={colors.fieryrose}
+                placeholderTextColor={colors.nyanza}
                 value={email}
                 onChangeText={newEmail => this.setState({ email: newEmail })}
               />
               <InputComponent
                 icon="lock"
                 placeholder="senha"
-                placeholderTextColor={colors.fieryrose}
-                secureTextEntry={false}
+                placeholderTextColor={colors.nyanza}
+                secureTextEntry
                 value={password}
                 onChangeText={newPassword => this.setState({ password: newPassword })}
               />
